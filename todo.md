@@ -19,3 +19,13 @@
 - [x] Specify the premium-entry paywall, where paid membership authorization gates protected browsing, creator engagement, messaging, purchases, and live-session entry.
 - [x] Restyle public and authenticated surfaces with a clean matte-black, restrained neon-pink, editorial visual system.
 - [x] Apply accessible Old English display typography and readable cursive photographic-treatment typography without compromising interface clarity.
+- [ ] Add the “Developing designed by XIOMHIVE technology” attribution to the site header.
+- [ ] Define the launch jurisdiction, adult-content policy, age/identity assurance, consent documentation, privacy, records, advertising, tax, and payment-provider compliance assumptions with qualified-review boundaries.
+- [ ] Implement a real Premium Access plan, provider-hosted subscription checkout, platform entitlement lifecycle, billing recovery, and server-enforced premium-network route gate.
+- [ ] Implement creator application, agreement/verification status, payout readiness, profile editing, product creation, publishing, protected media upload, and creator access controls.
+- [ ] Implement fan discovery, creator profiles, follows, paid creator memberships, PPV, tips, receipts, library, and account/billing-management workflows gated by Premium Access.
+- [ ] Implement member messaging, creator contact settings, blocks, reports, moderated live-event entry, managed-stream integration boundaries, and real-time chat constraints.
+- [ ] Implement staff queues for creator approval, reports, moderation actions, advertising disclosure/approval, audit review, account restrictions, and financial reconciliation.
+- [ ] Add integration, authorization, billing, moderation, and user-flow tests; refresh technical documentation; and complete a production-readiness review.
+- [x] Research current authoritative feature, security, privacy, payment, advertising, age-assurance, recordkeeping, and safety guidance for the platform’s documentation set.
+- [x] Produce and validate a complete, source-backed functional specification set covering all website features, architecture, data, APIs, controls, testing, operations, and launch requirements.
