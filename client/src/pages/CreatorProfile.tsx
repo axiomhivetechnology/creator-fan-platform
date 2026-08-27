@@ -5,72 +5,12 @@ import { Button } from "@/components/ui/button";
 import { BadgeCheck, CalendarDays, Flag, LockKeyhole, MessageCircle, Radio, ShieldCheck } from "lucide-react";
 import { Link, useRoute } from "wouter";
 
+const portrait = "/manus-storage/neon-editorial-portrait_79ff544d.jpeg";
+
 export default function CreatorProfile() {
   const [, params] = useRoute("/creator/:handle");
   const creator = creators.find(item => item.handle === params?.handle) ?? creators[0];
-
-  return (
-    <div className="min-h-screen bg-[#0b0a10] text-white">
-      <SiteHeader />
-      <main className="container pb-20 pt-8 sm:pt-12">
-        <Link href="/explore" className="text-sm text-zinc-500 transition hover:text-white">← Back to explore</Link>
-        <section className="relative mt-7 overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.035]">
-          <div className={`relative h-52 bg-gradient-to-br ${creator.accent} sm:h-64`}>
-            <div className="absolute inset-0 bg-[linear-gradient(125deg,rgba(11,10,16,.72),transparent_60%)]" />
-            <div className="absolute right-[12%] top-6 h-24 w-24 rounded-full border border-white/35 bg-white/10 backdrop-blur-sm" />
-            <div className="absolute bottom-0 left-0 h-20 w-full bg-gradient-to-t from-[#0b0a10]/80 to-transparent" />
-          </div>
-          <div className="relative px-5 pb-6 sm:px-8 sm:pb-8">
-            <div className="-mt-12 flex flex-col gap-5 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between">
-              <div className="flex items-end gap-4">
-                <div className="grid h-24 w-24 place-items-center rounded-[1.6rem] border-4 border-[#0b0a10] bg-zinc-950 text-xl font-semibold shadow-xl sm:h-28 sm:w-28">{creator.initials}</div>
-                <div className="pb-1">
-                  <div className="flex items-center gap-2"><h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{creator.displayName}</h1><BadgeCheck className="h-5 w-5 text-sky-300" aria-label="Verified creator" /></div>
-                  <p className="mt-1 text-sm text-zinc-400">@{creator.handle} · {creator.category}</p>
-                </div>
-              </div>
-              <div className="flex gap-2 sm:pb-1">
-                <Button variant="ghost" size="icon" className="rounded-xl border border-white/10 text-zinc-300 hover:bg-white/10 hover:text-white" aria-label="Report profile"><Flag className="h-4 w-4" /></Button>
-                <Button onClick={() => startLogin()} className="rounded-xl bg-white px-5 text-zinc-900 hover:bg-zinc-200">Subscribe</Button>
-              </div>
-            </div>
-            <div className="mt-7 grid gap-6 border-t border-white/10 pt-6 lg:grid-cols-[1fr_280px]">
-              <div>
-                <p className="max-w-2xl text-base leading-7 text-zinc-300">{creator.tagline} This preview demonstrates a direct, paid membership space. Account sign-in and payment setup are required before any real purchase, messaging, or protected media is available.</p>
-                <div className="mt-7 grid gap-3 sm:grid-cols-3">
-                  <Feature icon={<LockKeyhole className="h-4 w-4" />} title="Members’ feed" copy="Posts and media are unlocked from the creator’s membership." />
-                  <Feature icon={<MessageCircle className="h-4 w-4" />} title="Direct connection" copy="Member messaging is subject to creator settings and platform rules." />
-                  <Feature icon={<Radio className="h-4 w-4" />} title="Live sessions" copy="Entry is confirmed against your event access before playback." />
-                </div>
-              </div>
-              <aside className="rounded-2xl border border-white/10 bg-zinc-950/50 p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-300">Membership</p>
-                <p className="mt-3 text-3xl font-semibold">{creator.membershipPrice.replace(" / month", "")}</p>
-                <p className="mt-1 text-sm text-zinc-500">per month · cancel before renewal</p>
-                <Button onClick={() => startLogin()} className="mt-5 w-full rounded-xl bg-rose-400 text-zinc-950 hover:bg-rose-300">Join this space</Button>
-                <div className="mt-5 flex items-start gap-2 text-xs leading-5 text-zinc-500"><ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" />Payments and access are confirmed server-side. Do not share protected links.</div>
-              </aside>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-10 grid gap-4 lg:grid-cols-[1.25fr_.75fr]">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-5 sm:p-6">
-            <div className="flex items-center justify-between"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-300">Latest preview</p><h2 className="mt-2 text-xl font-semibold">The public edge of the feed</h2></div><span className="rounded-full bg-white/10 px-3 py-1 text-xs text-zinc-400">Public</span></div>
-            <p className="mt-4 max-w-xl text-sm leading-6 text-zinc-400">Creators can share a public introduction while reserving complete posts and assets for active members or individual purchase.</p>
-            <div className={`mt-5 aspect-[16/7] rounded-2xl bg-gradient-to-br ${creator.accent} p-5`}><div className="h-full rounded-xl border border-white/20 bg-zinc-950/15 p-4 backdrop-blur-sm"><p className="text-xs font-medium text-white/80">Creator feed preview</p><p className="mt-auto text-sm font-medium text-white">Original work, on the creator’s terms.</p></div></div>
-          </div>
-          <div className="rounded-3xl border border-white/10 bg-white/[0.035] p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-rose-300">Upcoming</p>
-            <div className="mt-5 flex gap-3"><div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10 text-rose-200"><CalendarDays className="h-4 w-4" /></div><div><p className="font-medium text-white">{creator.nextEvent}</p><p className="mt-1 text-sm leading-6 text-zinc-500">Schedule and audience access are managed in the live-event workflow.</p></div></div>
-            <Button onClick={() => startLogin()} variant="outline" className="mt-6 w-full rounded-xl border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white">Sign in for access</Button>
-          </div>
-        </section>
-      </main>
-    </div>
-  );
+  return <div className="min-h-screen bg-[#0b0a0d] text-white"><SiteHeader /><main className="container pb-20 pt-8 sm:pt-12"><Link href="/explore" className="text-[10px] font-medium uppercase tracking-[.15em] text-zinc-600 transition hover:text-pink-200">← Back to the collection</Link><section className="relative mt-6 overflow-hidden rounded-sm border border-white/[0.1] bg-white/[0.02]"><div className="relative h-56 overflow-hidden sm:h-72"><img src={portrait} alt="Editorial creator profile backdrop" className="h-full w-full object-cover object-[50%_38%] grayscale-[40%] saturate-[.72]" /><div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,10,13,.83),rgba(11,10,13,.22)_70%),linear-gradient(0deg,rgba(11,10,13,.96),transparent_55%)]" /><p className="absolute bottom-5 right-6 font-script text-4xl text-white sm:text-5xl">a space of their own</p></div><div className="relative px-5 pb-6 sm:px-8 sm:pb-8"><div className="-mt-11 flex flex-col gap-5 sm:-mt-14 sm:flex-row sm:items-end sm:justify-between"><div className="flex items-end gap-4"><div className="grid h-20 w-20 place-items-center rounded-sm border-4 border-[#0b0a0d] bg-pink-400/[0.14] text-lg font-medium text-pink-100 shadow-xl sm:h-24 sm:w-24">{creator.initials}</div><div className="pb-1"><div className="flex items-center gap-2"><h1 className="font-blackletter text-3xl leading-none sm:text-4xl">{creator.displayName}</h1><BadgeCheck className="h-4 w-4 text-pink-300" aria-label="Verified creator" /></div><p className="mt-2 text-[10px] font-medium uppercase tracking-[.13em] text-zinc-500">@{creator.handle} · {creator.category}</p></div></div><div className="flex gap-2 sm:pb-1"><Button variant="ghost" size="icon" className="h-9 w-9 rounded-sm border border-white/[0.1] text-zinc-400 hover:bg-pink-300/[0.08] hover:text-pink-200" aria-label="Report profile"><Flag className="h-3.5 w-3.5" /></Button><Button onClick={() => startLogin()} className="h-9 rounded-sm border border-pink-300/40 bg-pink-400/[0.14] px-4 text-xs text-pink-100 shadow-none hover:bg-pink-400/[0.22]">Subscribe</Button></div></div><div className="mt-7 grid gap-7 border-t border-white/[0.08] pt-6 lg:grid-cols-[1fr_260px]"><div><p className="max-w-2xl text-sm leading-7 text-zinc-400">{creator.tagline} This preview demonstrates a direct paid membership space. Account sign-in, Premium Access, and payment-provider configuration are required before any real purchase, message, or protected media is available.</p><div className="mt-7 grid gap-px overflow-hidden border border-white/[0.08] bg-white/[0.08] sm:grid-cols-3"><Feature icon={<LockKeyhole className="h-3.5 w-3.5" />} title="Members’ feed" copy="Posts and media unlock through creator membership." /><Feature icon={<MessageCircle className="h-3.5 w-3.5" />} title="Direct connection" copy="Contact follows creator settings and platform rules." /><Feature icon={<Radio className="h-3.5 w-3.5" />} title="Live sessions" copy="Entry is confirmed before playback begins." /></div></div><aside className="border border-pink-300/25 bg-pink-300/[0.04] p-5"><p className="text-[10px] font-medium uppercase tracking-[.16em] text-pink-200">Membership</p><p className="mt-4 font-blackletter text-4xl leading-none text-white">{creator.membershipPrice.replace(" / month", "")}</p><p className="mt-2 text-[11px] text-zinc-500">per month · cancel before renewal</p><Button onClick={() => startLogin()} className="mt-5 h-10 w-full rounded-sm border border-pink-300/40 bg-pink-400/[0.14] text-xs text-pink-100 shadow-none hover:bg-pink-400/[0.22]">Join this space</Button><div className="mt-5 flex items-start gap-2 border-t border-pink-200/10 pt-4 text-[10px] leading-5 text-zinc-500"><ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-pink-300" />Payments and access are confirmed server-side. Do not share protected links.</div></aside></div></div></section><section className="mt-10 grid gap-3 lg:grid-cols-[1.25fr_.75fr]"><div className="border border-white/[0.09] bg-white/[0.02] p-5 sm:p-6"><div className="flex items-start justify-between gap-4"><div><p className="text-[10px] font-medium uppercase tracking-[.16em] text-pink-200">Latest preview</p><h2 className="mt-3 font-script text-4xl leading-none text-white">The edge of the feed</h2></div><span className="border border-white/[0.1] px-2 py-1 text-[9px] font-medium uppercase tracking-[.13em] text-zinc-500">Public</span></div><p className="mt-5 max-w-xl text-xs leading-6 text-zinc-500">Creators can share an introduction while reserving complete posts and assets for active members or individual purchase.</p><div className={`relative mt-5 aspect-[16/7] overflow-hidden rounded-sm bg-gradient-to-br ${creator.accent} p-5`}><div className="absolute inset-0 bg-black/35" /><div className="relative flex h-full flex-col justify-between border border-white/20 p-4"><p className="text-[9px] font-medium uppercase tracking-[.15em] text-white/75">Creator feed preview</p><p className="font-script text-3xl leading-none text-white">Original work, on their terms.</p></div></div></div><div className="border border-white/[0.09] bg-white/[0.02] p-5 sm:p-6"><p className="text-[10px] font-medium uppercase tracking-[.16em] text-pink-200">Upcoming</p><div className="mt-5 flex gap-3"><div className="grid h-9 w-9 shrink-0 place-items-center border border-pink-300/20 bg-pink-300/[0.06] text-pink-200"><CalendarDays className="h-3.5 w-3.5" /></div><div><p className="text-sm font-medium text-white">{creator.nextEvent}</p><p className="mt-2 text-xs leading-6 text-zinc-500">Schedule and audience access are managed in the live-event workflow.</p></div></div><Button onClick={() => startLogin()} variant="outline" className="mt-7 h-10 w-full rounded-sm border-white/[0.13] bg-transparent text-xs text-zinc-300 hover:bg-pink-300/[0.07] hover:text-pink-100">Sign in for access</Button></div></section></main></div>;
 }
 
-function Feature({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
-  return <div className="rounded-2xl border border-white/10 bg-zinc-950/45 p-4"><span className="grid h-8 w-8 place-items-center rounded-lg bg-white/10 text-rose-200">{icon}</span><p className="mt-3 text-sm font-medium text-white">{title}</p><p className="mt-1 text-xs leading-5 text-zinc-500">{copy}</p></div>;
-}
+function Feature({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) { return <div className="bg-[#0b0a0d] p-4"><span className="grid h-7 w-7 place-items-center border border-pink-300/20 bg-pink-300/[0.06] text-pink-200">{icon}</span><p className="mt-4 text-xs font-medium text-white">{title}</p><p className="mt-2 text-[10px] leading-5 text-zinc-600">{copy}</p></div>; }

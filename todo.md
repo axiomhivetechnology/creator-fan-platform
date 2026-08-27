@@ -17,3 +17,5 @@
 - [x] Add age acknowledgement, creator review status, reporting, moderation escalation, and safety-notice interfaces.
 - [x] Create comprehensive feature, architecture, data, API, security, payments, and operations specifications for the creator platform.
 - [x] Specify the premium-entry paywall, where paid membership authorization gates protected browsing, creator engagement, messaging, purchases, and live-session entry.
+- [x] Restyle public and authenticated surfaces with a clean matte-black, restrained neon-pink, editorial visual system.
+- [x] Apply accessible Old English display typography and readable cursive photographic-treatment typography without compromising interface clarity.
