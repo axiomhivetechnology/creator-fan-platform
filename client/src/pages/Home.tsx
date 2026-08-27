@@ -1,33 +1,36 @@
-import { useAuth } from "@/_core/hooks/useAuth";
+import { CreatorCard } from "@/components/CreatorCard";
+import { SiteHeader } from "@/components/SiteHeader";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+import { creators } from "@/lib/catalog";
+import { startLogin } from "@/const";
+import { ArrowRight, BadgeCheck, Check, CircleDollarSign, HeartHandshake, LockKeyhole, Radio, ShieldCheck, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Link } from "wouter";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Workflow, Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
-  let { user, loading, error, isAuthenticated, logout } = useAuth();
-
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
-
+  const [ageNoticeVisible, setAgeNoticeVisible] = useState(true);
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen overflow-x-hidden bg-[#0b0a10] text-white">
+      <SiteHeader />
+      {ageNoticeVisible && <div className="border-b border-amber-200/15 bg-amber-200/[0.06]"><div className="container flex items-center justify-between gap-3 py-2.5 text-xs text-amber-100/80"><span>Creator Hub is for adults. By continuing, you acknowledge that you meet the age requirement in your location.</span><button onClick={() => setAgeNoticeVisible(false)} className="shrink-0 font-medium text-amber-100 underline underline-offset-4 hover:text-white">I understand</button></div></div>}
       <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
+        <section className="relative isolate overflow-hidden">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_55%_at_85%_5%,rgba(239,68,117,.28),transparent_63%),radial-gradient(ellipse_50%_55%_at_15%_30%,rgba(111,73,255,.22),transparent_62%)]" />
+          <div className="container grid min-h-[650px] items-center gap-12 py-16 lg:grid-cols-[1.05fr_.95fr] lg:py-24">
+            <div className="max-w-2xl"><div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-medium text-zinc-300"><span className="h-1.5 w-1.5 rounded-full bg-rose-300" />Direct memberships, original work, real connection</div><h1 className="mt-7 text-balance text-5xl font-semibold leading-[.98] tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl">A place for the work that doesn’t fit in a feed.</h1><p className="mt-7 max-w-xl text-pretty text-base leading-7 text-zinc-400 sm:text-lg">Creator Hub gives independent creators a direct space for memberships, locked posts, paid drops, live sessions, and community—without handing the relationship to an algorithm.</p><div className="mt-9 flex flex-col gap-3 sm:flex-row"><Button onClick={() => startLogin()} size="lg" className="h-12 rounded-xl bg-rose-400 px-6 text-zinc-950 shadow-lg shadow-rose-500/15 hover:bg-rose-300">Start exploring <ArrowRight className="ml-2 h-4 w-4" /></Button><Link href="/explore"><Button variant="outline" size="lg" className="h-12 w-full rounded-xl border-white/15 bg-transparent px-6 text-white hover:bg-white/10 hover:text-white sm:w-auto">Browse preview profiles</Button></Link></div><p className="mt-5 text-xs text-zinc-600">Payments, subscriptions, and protected access are only enabled after secure provider configuration.</p></div>
+            <div className="relative mx-auto w-full max-w-md lg:max-w-none"><div className="absolute -right-12 -top-10 h-36 w-36 rounded-full bg-fuchsia-400/20 blur-3xl" /><div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.07] p-4 shadow-2xl shadow-black/40 backdrop-blur-xl"><div className="flex items-center justify-between p-2"><span className="text-xs font-medium text-zinc-400">Creator space</span><span className="rounded-full bg-rose-300/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-rose-200">Members-first</span></div><div className="mt-2 rounded-[1.45rem] bg-zinc-950/70 p-4"><div className="flex items-center gap-3"><div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-rose-400 font-semibold text-zinc-950">AH</div><div><p className="font-medium text-white">After Hours</p><p className="text-xs text-zinc-500">Music & culture</p></div><BadgeCheck className="ml-auto h-4 w-4 text-sky-300" /></div><div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4"><div className="flex items-center gap-2 text-xs text-rose-200"><LockKeyhole className="h-3.5 w-3.5" />Member post</div><p className="mt-3 text-sm font-medium text-white">The take before the final take.</p><p className="mt-2 text-xs leading-5 text-zinc-500">Behind the new session: instruments, mistakes, and the part that never makes the release.</p><div className="mt-4 h-24 rounded-xl bg-[linear-gradient(135deg,rgba(244,114,182,.6),rgba(192,132,252,.35)_45%,rgba(11,10,16,.8))]" /></div><div className="mt-4 flex items-center justify-between rounded-xl bg-white/[0.04] px-4 py-3"><div className="flex items-center gap-2 text-xs text-zinc-400"><Radio className="h-3.5 w-3.5 text-rose-300" />Live session · Fri 8 PM</div><span className="text-xs font-medium text-white">Access confirmed</span></div></div></div></div>
+          </div>
+        </section>
+        <section className="border-y border-white/10 bg-white/[0.025]"><div className="container grid gap-8 py-7 sm:grid-cols-3 sm:gap-4"><Proof icon={<HeartHandshake className="h-5 w-5" />} title="Direct support" copy="Membership and one-time access live between a creator and their audience." /><Proof icon={<LockKeyhole className="h-5 w-5" />} title="Access with intent" copy="Protected posts and live events are checked against server-side entitlements." /><Proof icon={<CircleDollarSign className="h-5 w-5" />} title="Clear operations" copy="Revenue, payouts, adjustments, and receipts are designed to be traceable." /></div></section>
+        <section className="container py-20 sm:py-28"><div className="flex flex-col justify-between gap-6 md:flex-row md:items-end"><div className="max-w-xl"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-300">Independent by design</p><h2 className="mt-4 text-balance text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Find the people building a world you want to step into.</h2></div><Link href="/explore" className="group inline-flex items-center gap-2 text-sm font-medium text-zinc-300 transition hover:text-white">Explore all preview profiles <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" /></Link></div><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{creators.map((creator, index) => <CreatorCard key={creator.handle} creator={creator} index={index} />)}</div></section>
+        <section id="how-it-works" className="border-y border-white/10 bg-[#111018]"><div className="container py-20 sm:py-28"><div className="max-w-xl"><p className="text-xs font-semibold uppercase tracking-[0.2em] text-rose-300">How it works</p><h2 className="mt-4 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">Built for the exchange, not just the scroll.</h2></div><div className="mt-12 grid gap-4 lg:grid-cols-3"><Step number="01" title="Create a space" copy="A creator establishes a profile, membership terms, payout readiness, and audience rules." /><Step number="02" title="Choose the access" copy="Fans can join recurring memberships, unlock individual drops, or get entry to ticketed live events." /><Step number="03" title="Keep it accountable" copy="Payment status, access entitlements, moderation activity, and adjustments are recorded in the platform." /></div></div></section>
+        <section id="safety" className="container py-20 sm:py-28"><div className="grid gap-10 rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_100%_0%,rgba(236,72,153,.15),transparent_34%),white] bg-white/[0.04] p-7 sm:p-10 lg:grid-cols-[.8fr_1.2fr]"><div><span className="grid h-11 w-11 place-items-center rounded-2xl bg-emerald-400/10 text-emerald-300"><ShieldCheck className="h-5 w-5" /></span><h2 className="mt-6 text-3xl font-semibold tracking-[-0.04em]">A direct platform still needs clear boundaries.</h2></div><div className="grid gap-3 sm:grid-cols-2"><SafetyItem title="Adults only" copy="Age acknowledgement and account eligibility are treated as core access requirements." /><SafetyItem title="Protected access" copy="The application checks ownership, account status, and current entitlement before issuing protected access." /><SafetyItem title="Reporting tools" copy="Profiles, posts, assets, messages, live events, and ads have reporting and moderation workflow foundations." /><SafetyItem title="Transparent promotion" copy="Sponsored spaces carry labels and disclosure fields, pending applicable policy review." /></div></div></section>
+        <section className="border-t border-white/10 pb-12 pt-16"><div className="container flex flex-col justify-between gap-6 sm:flex-row sm:items-center"><div><p className="font-semibold">Creator Hub</p><p className="mt-2 text-sm text-zinc-500">A conventional, non-AI platform for direct creator support.</p></div><div className="flex gap-5 text-xs text-zinc-500"><a href="#safety" className="hover:text-white">Safety</a><a href="#how-it-works" className="hover:text-white">Terms</a><a href="#how-it-works" className="hover:text-white">Privacy</a></div></div></section>
       </main>
     </div>
   );
 }
+
+function Proof({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) { return <div className="flex gap-4"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/[0.07] text-rose-200">{icon}</span><div><p className="text-sm font-medium text-white">{title}</p><p className="mt-1 text-xs leading-5 text-zinc-500">{copy}</p></div></div>; }
+function Step({ number, title, copy }: { number: string; title: string; copy: string }) { return <article className="rounded-3xl border border-white/10 bg-white/[0.035] p-6"><p className="text-xs font-semibold tracking-[0.2em] text-rose-300">{number}</p><h3 className="mt-8 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-6 text-zinc-500">{copy}</p><Check className="mt-8 h-5 w-5 text-rose-300" /></article>; }
+function SafetyItem({ title, copy }: { title: string; copy: string }) { return <div className="rounded-2xl border border-white/10 bg-zinc-950/35 p-5"><p className="font-medium text-white">{title}</p><p className="mt-2 text-sm leading-6 text-zinc-500">{copy}</p></div>; }
