@@ -28,3 +28,4 @@
 - [x] Add authorization, membership, creator-gating, media, messaging, and payment-mapping tests; refresh the specification set; and complete the documented production-readiness review. Provider integration and end-to-end production tests remain launch gates.
 - [x] Research current authoritative feature, security, privacy, payment, advertising, age-assurance, recordkeeping, and safety guidance for the platform’s documentation set.
 - [x] Produce and validate a complete, source-backed functional specification set covering all website features, architecture, data, APIs, controls, testing, operations, and launch requirements.
+- [x] Replace the XIOMHIVE header credit with AXIOM-HIVE TECHNOLOGY.
