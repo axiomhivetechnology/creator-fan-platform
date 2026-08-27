@@ -11,10 +11,24 @@ export type ResourceAccessInput = {
   isPublished?: boolean;
 };
 
-const staffRoles = new Set<PlatformUser["role"]>(["moderator", "finance", "admin"]);
+const moderationRoles = new Set<PlatformUser["role"]>(["moderator", "admin"]);
 
 export function hasActiveAccount(user: PlatformUser | null | undefined): user is PlatformUser {
   return Boolean(user && user.accountStatus === "active");
+}
+
+export type PremiumAccessStatus = "none" | "pending" | "active" | "grace" | "canceled" | "expired" | "revoked";
+
+/**
+ * Premium Access is a platform-level gate. A resource can impose additional
+ * creator membership, PPV, ticket, ownership, or staff requirements.
+ */
+export function hasPremiumAccess(user: PlatformUser | null | undefined, premiumStatus: PremiumAccessStatus) {
+  return hasActiveAccount(user) && premiumStatus === "active";
+}
+
+export function canEnterPremiumNetwork(user: PlatformUser | null | undefined, premiumStatus: PremiumAccessStatus) {
+  return hasPremiumAccess(user, premiumStatus);
 }
 
 export function canManageCreatorAccount(user: PlatformUser | null | undefined, creatorUserId: number) {
@@ -23,7 +37,11 @@ export function canManageCreatorAccount(user: PlatformUser | null | undefined, c
 }
 
 export function canModeratePlatform(user: PlatformUser | null | undefined) {
-  return Boolean(hasActiveAccount(user) && staffRoles.has(user.role));
+  return Boolean(hasActiveAccount(user) && moderationRoles.has(user.role));
+}
+
+export function canAdministerPlatform(user: PlatformUser | null | undefined) {
+  return Boolean(hasActiveAccount(user) && user.role === "admin");
 }
 
 export function canReviewRevenue(user: PlatformUser | null | undefined, creatorUserId: number) {

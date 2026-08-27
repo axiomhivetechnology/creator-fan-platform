@@ -1,8 +1,14 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, desc, eq, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
+  accountBlocks,
+  adPlacements,
   auditLogs,
+  creatorApplications,
+  creatorFollows,
   creatorProfiles,
+  contentAssets,
+  conversations,
   entitlements,
   InsertUser,
   orders,
@@ -10,10 +16,14 @@ import {
   products,
   reports,
   liveEvents,
+  messages,
+  platformAccessPlans,
+  platformSubscriptions,
   subscriptions,
   users,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
+import type { PremiumAccessStatus } from "./platform/access";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -101,6 +111,74 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
+export async function getCreatorApplicationForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const [application] = await db.select().from(creatorApplications).where(eq(creatorApplications.userId, userId)).limit(1);
+  return application;
+}
+
+export async function submitCreatorApplication(input: {
+  userId: number;
+  displayName: string;
+  proposedHandle: string;
+  category?: string;
+  applicationNote?: string;
+  agreementVersion: string;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const existing = await getCreatorApplicationForUser(input.userId);
+  if (existing?.status === "approved") throw new Error("This creator application is already approved.");
+  const values = {
+    displayName: input.displayName,
+    proposedHandle: input.proposedHandle,
+    category: input.category ?? null,
+    applicationNote: input.applicationNote ?? null,
+    agreementVersion: input.agreementVersion,
+    agreementAcceptedAt: new Date(),
+    status: "submitted" as const,
+    submittedAt: new Date(),
+  };
+  if (existing) {
+    await db.update(creatorApplications).set(values).where(eq(creatorApplications.id, existing.id));
+    return { id: existing.id, status: "submitted" as const };
+  }
+  const result = await db.insert(creatorApplications).values({ userId: input.userId, ...values });
+  return { id: result[0].insertId, status: "submitted" as const };
+}
+
+export async function getCreatorPublishingProfile(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const [creator] = await db.select().from(creatorProfiles).where(eq(creatorProfiles.userId, userId)).limit(1);
+  return creator;
+}
+
+export async function createCreatorPost(input: { creatorId: number; title: string; body?: string; accessType: "public" | "members" | "ppv" | "private"; ppvPrice?: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const result = await db.insert(posts).values({ creatorId: input.creatorId, title: input.title, body: input.body ?? null, accessType: input.accessType, ppvPrice: input.ppvPrice ?? null, publicationStatus: "draft" });
+  return { id: result[0].insertId, publicationStatus: "draft" as const };
+}
+
+export async function getCreatorOwnedPost(postId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const [post] = await db.select().from(posts).where(eq(posts.id, postId)).limit(1);
+  if (!post) return undefined;
+  const creator = await getCreatorProfileById(post.creatorId);
+  if (!creator || creator.userId !== userId) return undefined;
+  return { post, creator };
+}
+
+export async function registerCreatorContentAsset(input: { creatorId: number; postId: number; storageKey: string; contentType: string; byteSize: number }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const result = await db.insert(contentAssets).values({ creatorId: input.creatorId, postId: input.postId, storageKey: input.storageKey, contentType: input.contentType, byteSize: input.byteSize, moderationStatus: "pending" });
+  return { id: result[0].insertId, moderationStatus: "pending" as const };
+}
+
 export async function getPostAccessSubject(postId: number) {
   const db = await getDb();
   if (!db) return undefined;
@@ -128,6 +206,231 @@ export async function getCurrentEntitlements(userId: number) {
     .where(and(eq(entitlements.userId, userId), eq(entitlements.status, "active")));
 }
 
+export async function hasCurrentCreatorMembership(userId: number, creatorId: number) {
+  const entitlementsForUser = await getCurrentEntitlements(userId);
+  const now = Date.now();
+  return entitlementsForUser.some(entitlement => entitlement.resourceType === "creator_membership" && entitlement.resourceId === creatorId && (!entitlement.validUntil || entitlement.validUntil.getTime() > now));
+}
+
+export async function isBlockedBetween(userId: number, otherUserId: number) {
+  const db = await getDb();
+  if (!db) return false;
+  const [block] = await db.select({ id: accountBlocks.id }).from(accountBlocks).where(or(and(eq(accountBlocks.blockerUserId, userId), eq(accountBlocks.blockedUserId, otherUserId)), and(eq(accountBlocks.blockerUserId, otherUserId), eq(accountBlocks.blockedUserId, userId)))).limit(1);
+  return Boolean(block);
+}
+
+export async function setCreatorFollow(fanId: number, creatorId: number, following: boolean) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  if (!following) {
+    await db.delete(creatorFollows).where(and(eq(creatorFollows.fanId, fanId), eq(creatorFollows.creatorId, creatorId)));
+    return { following: false };
+  }
+  await db.insert(creatorFollows).values({ fanId, creatorId }).onDuplicateKeyUpdate({ set: { fanId } });
+  return { following: true };
+}
+
+export async function setAccountBlock(blockerUserId: number, blockedUserId: number, reason?: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  await db.insert(accountBlocks).values({ blockerUserId, blockedUserId, reason: reason ?? null }).onDuplicateKeyUpdate({ set: { reason: reason ?? null } });
+  return { blocked: true };
+}
+
+export async function removeAccountBlock(blockerUserId: number, blockedUserId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  await db.delete(accountBlocks).where(and(eq(accountBlocks.blockerUserId, blockerUserId), eq(accountBlocks.blockedUserId, blockedUserId)));
+  return { blocked: false };
+}
+
+export async function updateCreatorContactSettings(userId: number, input: { messagePolicy: "premium_members" | "creator_members" | "disabled"; allowTips: boolean }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const creator = await getCreatorPublishingProfile(userId);
+  if (!creator) throw new Error("Creator profile was not found.");
+  await db.update(creatorProfiles).set(input).where(eq(creatorProfiles.id, creator.id));
+  return { ...creator, ...input };
+}
+
+export async function getOrCreateConversation(fanId: number, creatorId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const [existing] = await db.select().from(conversations).where(and(eq(conversations.fanId, fanId), eq(conversations.creatorId, creatorId))).limit(1);
+  if (existing) return existing;
+  const result = await db.insert(conversations).values({ fanId, creatorId, status: "open" });
+  const [created] = await db.select().from(conversations).where(eq(conversations.id, result[0].insertId)).limit(1);
+  if (!created) throw new Error("Conversation could not be created.");
+  return created;
+}
+
+export async function getConversationForParticipant(conversationId: number, userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const [conversation] = await db.select().from(conversations).where(eq(conversations.id, conversationId)).limit(1);
+  if (!conversation) return undefined;
+  const creator = await getCreatorProfileById(conversation.creatorId);
+  if (!creator || (conversation.fanId !== userId && creator.userId !== userId)) return undefined;
+  return { conversation, creator };
+}
+
+export async function sendConversationMessage(conversationId: number, senderId: number, body: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const result = await db.insert(messages).values({ conversationId, senderId, body, status: "sent" });
+  await db.update(conversations).set({ updatedAt: new Date() }).where(eq(conversations.id, conversationId));
+  return { id: result[0].insertId };
+}
+
+export async function listConversationsForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  const rows = await db
+    .select({
+      id: conversations.id,
+      fanId: conversations.fanId,
+      creatorId: conversations.creatorId,
+      status: conversations.status,
+      updatedAt: conversations.updatedAt,
+      creatorDisplayName: creatorProfiles.displayName,
+      creatorHandle: creatorProfiles.handle,
+      creatorUserId: creatorProfiles.userId,
+    })
+    .from(conversations)
+    .innerJoin(creatorProfiles, eq(creatorProfiles.id, conversations.creatorId))
+    .where(or(eq(conversations.fanId, userId), eq(creatorProfiles.userId, userId)))
+    .orderBy(desc(conversations.updatedAt));
+  return rows;
+}
+
+export async function listConversationMessages(conversationId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(messages).where(eq(messages.conversationId, conversationId)).orderBy(asc(messages.createdAt));
+}
+
+export async function getOperationsSummary() {
+  const db = await getDb();
+  if (!db) return { creatorApplications: 0, openReports: 0, pendingAssets: 0, pendingAds: 0 };
+  const [applications, openReports, pendingAssets, pendingAds] = await Promise.all([
+    db.select({ id: creatorApplications.id }).from(creatorApplications).where(eq(creatorApplications.status, "submitted")),
+    db.select({ id: reports.id }).from(reports).where(eq(reports.status, "open")),
+    db.select({ id: contentAssets.id }).from(contentAssets).where(eq(contentAssets.moderationStatus, "pending")),
+    db.select({ id: adPlacements.id }).from(adPlacements).where(eq(adPlacements.status, "pending_review")),
+  ]);
+  return { creatorApplications: applications.length, openReports: openReports.length, pendingAssets: pendingAssets.length, pendingAds: pendingAds.length };
+}
+
+export async function listSubmittedCreatorApplications() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(creatorApplications).where(eq(creatorApplications.status, "submitted")).orderBy(asc(creatorApplications.submittedAt));
+}
+
+export async function reviewCreatorApplication(input: { applicationId: number; reviewerId: number; status: "needs_info" | "approved" | "rejected" | "restricted"; eligibilityStatus: "pending" | "verified" | "failed" | "expired"; payoutReadiness: "pending" | "ready" | "restricted"; reviewNote?: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const [application] = await db.select().from(creatorApplications).where(eq(creatorApplications.id, input.applicationId)).limit(1);
+  if (!application) throw new Error("Creator application was not found.");
+  await db.update(creatorApplications).set({ status: input.status, eligibilityStatus: input.eligibilityStatus, payoutReadiness: input.payoutReadiness, reviewNote: input.reviewNote ?? null, reviewedBy: input.reviewerId, reviewedAt: new Date() }).where(eq(creatorApplications.id, application.id));
+  if (input.status === "approved" && input.eligibilityStatus === "verified" && input.payoutReadiness === "ready") {
+    await db.update(users).set({ role: "creator" }).where(eq(users.id, application.userId));
+    const creator = await getCreatorPublishingProfile(application.userId);
+    if (creator) {
+      await db.update(creatorProfiles).set({ displayName: application.displayName, handle: application.proposedHandle, category: application.category, approvalStatus: "approved", payoutStatus: "ready" }).where(eq(creatorProfiles.id, creator.id));
+    } else {
+      await db.insert(creatorProfiles).values({ userId: application.userId, displayName: application.displayName, handle: application.proposedHandle, category: application.category, approvalStatus: "approved", payoutStatus: "ready" });
+    }
+  }
+  return { id: application.id, status: input.status };
+}
+
+export async function listOpenReports() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(reports).where(or(eq(reports.status, "open"), eq(reports.status, "under_review"))).orderBy(asc(reports.createdAt));
+}
+
+export async function resolveReport(input: { reportId: number; status: "under_review" | "actioned" | "dismissed" }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  await db.update(reports).set({ status: input.status, resolvedAt: input.status === "under_review" ? null : new Date() }).where(eq(reports.id, input.reportId));
+  return { id: input.reportId, status: input.status };
+}
+
+export async function listPendingContentAssets() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(contentAssets).where(eq(contentAssets.moderationStatus, "pending")).orderBy(asc(contentAssets.createdAt));
+}
+
+export async function reviewContentAsset(assetId: number, status: "approved" | "rejected") {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  await db.update(contentAssets).set({ moderationStatus: status }).where(eq(contentAssets.id, assetId));
+  return { id: assetId, status };
+}
+
+export async function listPendingAdPlacements() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(adPlacements).where(eq(adPlacements.status, "pending_review")).orderBy(asc(adPlacements.createdAt));
+}
+
+export async function reviewAdPlacement(adId: number, status: "approved" | "paused" | "rejected") {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  await db.update(adPlacements).set({ status }).where(eq(adPlacements.id, adId));
+  return { id: adId, status };
+}
+
+export async function getPremiumAccessStatus(userId: number): Promise<PremiumAccessStatus> {
+  const db = await getDb();
+  if (!db) return "none";
+  const rows = await db
+    .select()
+    .from(entitlements)
+    .where(and(eq(entitlements.userId, userId), eq(entitlements.resourceType, "premium_access")))
+    .orderBy(desc(entitlements.updatedAt));
+  const now = Date.now();
+  const current = rows.find(row => !row.validUntil || row.validUntil.getTime() > now);
+  if (!current) return rows[0]?.status === "revoked" ? "revoked" : rows[0]?.status === "expired" ? "expired" : "none";
+  return current.status === "active" || current.status === "grace" || current.status === "revoked" || current.status === "expired"
+    ? current.status
+    : "none";
+}
+
+export async function listActivePremiumAccessPlans() {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      id: platformAccessPlans.id,
+      code: platformAccessPlans.code,
+      name: platformAccessPlans.name,
+      description: platformAccessPlans.description,
+      monthlyPrice: platformAccessPlans.monthlyPrice,
+      annualPrice: platformAccessPlans.annualPrice,
+      currency: platformAccessPlans.currency,
+      policyVersion: platformAccessPlans.policyVersion,
+    })
+    .from(platformAccessPlans)
+    .where(eq(platformAccessPlans.status, "active"))
+    .orderBy(asc(platformAccessPlans.sortOrder));
+}
+
+export async function getCurrentPlatformSubscription(userId: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const [subscription] = await db
+    .select()
+    .from(platformSubscriptions)
+    .where(eq(platformSubscriptions.userId, userId))
+    .orderBy(desc(platformSubscriptions.updatedAt))
+    .limit(1);
+  return subscription;
+}
+
 export async function getLiveEventAccessSubject(liveEventId: number) {
   const db = await getDb();
   if (!db) return undefined;
@@ -136,6 +439,28 @@ export async function getLiveEventAccessSubject(liveEventId: number) {
   const creator = await getCreatorProfileById(event.creatorId);
   if (!creator) return undefined;
   return { event, creator };
+}
+
+export async function createCreatorLiveEvent(input: {
+  creatorId: number;
+  title: string;
+  description?: string;
+  accessType: "members" | "ticketed" | "private";
+  scheduledStartAt: Date;
+  scheduledEndAt?: Date;
+}) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const result = await db.insert(liveEvents).values({
+    creatorId: input.creatorId,
+    title: input.title,
+    description: input.description ?? null,
+    accessType: input.accessType,
+    scheduledStartAt: input.scheduledStartAt,
+    scheduledEndAt: input.scheduledEndAt ?? null,
+    status: "scheduled",
+  });
+  return { id: result[0].insertId, status: "scheduled" as const };
 }
 
 export async function getCreatorProfileById(creatorId: number) {

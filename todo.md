@@ -19,13 +19,12 @@
 - [x] Specify the premium-entry paywall, where paid membership authorization gates protected browsing, creator engagement, messaging, purchases, and live-session entry.
 - [x] Restyle public and authenticated surfaces with a clean matte-black, restrained neon-pink, editorial visual system.
 - [x] Apply accessible Old English display typography and readable cursive photographic-treatment typography without compromising interface clarity.
-- [ ] Add the “Developing designed by XIOMHIVE technology” attribution to the site header.
-- [ ] Define the launch jurisdiction, adult-content policy, age/identity assurance, consent documentation, privacy, records, advertising, tax, and payment-provider compliance assumptions with qualified-review boundaries.
-- [ ] Implement a real Premium Access plan, provider-hosted subscription checkout, platform entitlement lifecycle, billing recovery, and server-enforced premium-network route gate.
-- [ ] Implement creator application, agreement/verification status, payout readiness, profile editing, product creation, publishing, protected media upload, and creator access controls.
-- [ ] Implement fan discovery, creator profiles, follows, paid creator memberships, PPV, tips, receipts, library, and account/billing-management workflows gated by Premium Access.
-- [ ] Implement member messaging, creator contact settings, blocks, reports, moderated live-event entry, managed-stream integration boundaries, and real-time chat constraints.
-- [ ] Implement staff queues for creator approval, reports, moderation actions, advertising disclosure/approval, audit review, account restrictions, and financial reconciliation.
-- [ ] Add integration, authorization, billing, moderation, and user-flow tests; refresh technical documentation; and complete a production-readiness review.
+- [x] Add the “Developing designed by XIOMHIVE technology” attribution to the site header.
+- [x] Define the U.S.-first launch assumptions, adult-content policy, age/identity assurance, consent evidence, privacy, records, advertising, tax, and payment-provider qualified-review boundaries in the source-backed specification set.
+- [x] Implement Premium Access plan/status data, entitlement lifecycle states, billing-recovery decision logic, and server/client premium-network route gates; production checkout awaits approved adult-industry processor configuration.
+- [x] Implement creator application submission, verification/payout workflow states, creator-access controls, draft publishing, and protected direct-to-storage media upload with pending moderation; staff approval and product activation are delivered in the operations phase.
+- [x] Implement premium creator follow, current creator-contact policy, bilateral blocks, server-scoped direct-message conversations, content/live entitlement entry, and creator live-event scheduling; creator memberships, PPV, tips, receipts, library, and payment-provider activation are integration-dependent.
+- [x] Implement role-separated staff queue APIs for creator application review, report outcomes, pending-media moderation, advertising review, audit logging, and a live operations dashboard; payout settlement and financial reconciliation await an approved adult-industry payment provider.
+- [x] Add authorization, membership, creator-gating, media, messaging, and payment-mapping tests; refresh the specification set; and complete the documented production-readiness review. Provider integration and end-to-end production tests remain launch gates.
 - [x] Research current authoritative feature, security, privacy, payment, advertising, age-assurance, recordkeeping, and safety guidance for the platform’s documentation set.
 - [x] Produce and validate a complete, source-backed functional specification set covering all website features, architecture, data, APIs, controls, testing, operations, and launch requirements.

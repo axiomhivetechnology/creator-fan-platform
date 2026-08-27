@@ -1,10 +1,14 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { PremiumAccessGate } from "@/components/PremiumAccessGate";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import AccountHub from "./pages/AccountHub";
+import CreatorApplication from "./pages/CreatorApplication";
+import CreatorContactSettings from "./pages/CreatorContactSettings";
+import CreatorEvents from "./pages/CreatorEvents";
 import CreatorProfile from "./pages/CreatorProfile";
 import CreatorStudio from "./pages/CreatorStudio";
 import Explore from "./pages/Explore";
@@ -12,6 +16,7 @@ import Home from "./pages/Home";
 import Inbox from "./pages/Inbox";
 import LiveLobby from "./pages/LiveLobby";
 import OperationsDesk from "./pages/OperationsDesk";
+import PremiumAccess from "./pages/PremiumAccess";
 import SafetyCenter from "./pages/SafetyCenter";
 
 function Router() {
@@ -19,12 +24,16 @@ function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path={"/explore"} component={Explore} />
-      <Route path={"/creator/:handle"} component={CreatorProfile} />
+      <Route path={"/join"} component={PremiumAccess} />
+      <Route path={"/apply"} component={CreatorApplication} />
+      <Route path={"/studio/live"} component={CreatorEvents} />
+      <Route path={"/studio/contact"} component={CreatorContactSettings} />
+      <Route path={"/explore"}>{() => <PremiumAccessGate><Explore /></PremiumAccessGate>}</Route>
+      <Route path={"/creator/:handle"}>{() => <PremiumAccessGate><CreatorProfile /></PremiumAccessGate>}</Route>
       <Route path={"/dashboard"} component={AccountHub} />
       <Route path={"/studio"} component={CreatorStudio} />
-      <Route path={"/live"} component={LiveLobby} />
-      <Route path={"/inbox"} component={Inbox} />
+      <Route path={"/live"}>{() => <PremiumAccessGate><LiveLobby /></PremiumAccessGate>}</Route>
+      <Route path={"/inbox"}>{() => <PremiumAccessGate><Inbox /></PremiumAccessGate>}</Route>
       <Route path={"/safety"} component={SafetyCenter} />
       <Route path={"/operations"} component={OperationsDesk} />
       <Route path={"/404"} component={NotFound} />

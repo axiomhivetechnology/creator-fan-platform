@@ -35,6 +35,57 @@ export const users = mysqlTable("users", {
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
 });
 
+/**
+ * Premium Access is the platform-level prerequisite for entering the private
+ * creator network. It is deliberately separate from creator memberships,
+ * PPV purchases, and live-event tickets.
+ */
+export const platformAccessPlans = mysqlTable(
+  "platformAccessPlans",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    code: varchar("code", { length: 48 }).notNull(),
+    name: varchar("name", { length: 120 }).notNull(),
+    description: text("description"),
+    monthlyPrice: decimal("monthlyPrice", { precision: 12, scale: 2 }),
+    annualPrice: decimal("annualPrice", { precision: 12, scale: 2 }),
+    currency: varchar("currency", { length: 3 }).default("USD").notNull(),
+    status: mysqlEnum("status", ["draft", "active", "archived"]).default("draft").notNull(),
+    providerProductId: varchar("providerProductId", { length: 256 }),
+    providerMonthlyPriceId: varchar("providerMonthlyPriceId", { length: 256 }),
+    providerAnnualPriceId: varchar("providerAnnualPriceId", { length: 256 }),
+    policyVersion: varchar("policyVersion", { length: 48 }).notNull(),
+    sortOrder: int("sortOrder").default(0).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [uniqueIndex("platform_access_plans_code_unique").on(table.code), index("platform_access_plans_status_sort").on(table.status, table.sortOrder)],
+);
+
+export const platformSubscriptions = mysqlTable(
+  "platformSubscriptions",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull(),
+    planId: int("planId").notNull(),
+    provider: varchar("provider", { length: 48 }),
+    providerCustomerId: varchar("providerCustomerId", { length: 256 }),
+    providerSubscriptionId: varchar("providerSubscriptionId", { length: 256 }),
+    status: mysqlEnum("status", ["pending", "active", "grace", "canceled", "expired", "revoked"])
+      .default("pending")
+      .notNull(),
+    currentPeriodStart: timestamp("currentPeriodStart"),
+    currentPeriodEnd: timestamp("currentPeriodEnd"),
+    cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").default(false).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [
+    index("platform_subscriptions_user_status").on(table.userId, table.status),
+    uniqueIndex("platform_subscriptions_provider_unique").on(table.providerSubscriptionId),
+  ],
+);
+
 export const creatorProfiles = mysqlTable(
   "creatorProfiles",
   {
@@ -53,6 +104,10 @@ export const creatorProfiles = mysqlTable(
     payoutStatus: mysqlEnum("payoutStatus", ["not_started", "pending", "ready", "restricted"])
       .default("not_started")
       .notNull(),
+    messagePolicy: mysqlEnum("messagePolicy", ["premium_members", "creator_members", "disabled"])
+      .default("creator_members")
+      .notNull(),
+    allowTips: boolean("allowTips").default(true).notNull(),
     createdAt: timestamp("createdAt").defaultNow().notNull(),
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
@@ -60,6 +115,41 @@ export const creatorProfiles = mysqlTable(
     uniqueIndex("creator_profiles_user_id_unique").on(table.userId),
     uniqueIndex("creator_profiles_handle_unique").on(table.handle),
   ],
+);
+
+/**
+ * Creator applications hold non-document workflow state. Identity, age,
+ * consent, and other restricted compliance evidence must remain with the
+ * approved verification/evidence service rather than ordinary app records.
+ */
+export const creatorApplications = mysqlTable(
+  "creatorApplications",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull(),
+    displayName: varchar("displayName", { length: 120 }).notNull(),
+    proposedHandle: varchar("proposedHandle", { length: 64 }).notNull(),
+    category: varchar("category", { length: 80 }),
+    applicationNote: text("applicationNote"),
+    agreementVersion: varchar("agreementVersion", { length: 48 }).notNull(),
+    agreementAcceptedAt: timestamp("agreementAcceptedAt"),
+    eligibilityStatus: mysqlEnum("eligibilityStatus", ["not_started", "pending", "verified", "failed", "expired"])
+      .default("not_started")
+      .notNull(),
+    payoutReadiness: mysqlEnum("payoutReadiness", ["not_started", "pending", "ready", "restricted"])
+      .default("not_started")
+      .notNull(),
+    status: mysqlEnum("status", ["draft", "submitted", "needs_info", "approved", "rejected", "restricted"])
+      .default("draft")
+      .notNull(),
+    reviewNote: text("reviewNote"),
+    reviewedBy: int("reviewedBy"),
+    submittedAt: timestamp("submittedAt"),
+    reviewedAt: timestamp("reviewedAt"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [uniqueIndex("creator_applications_user_unique").on(table.userId), index("creator_applications_status_created").on(table.status, table.createdAt)],
 );
 
 export const membershipTiers = mysqlTable(
@@ -201,7 +291,7 @@ export const entitlements = mysqlTable(
     id: int("id").autoincrement().primaryKey(),
     userId: int("userId").notNull(),
     creatorId: int("creatorId"),
-    resourceType: mysqlEnum("resourceType", ["creator_membership", "post", "live_event", "bundle"])
+    resourceType: mysqlEnum("resourceType", ["premium_access", "creator_membership", "post", "live_event", "bundle"])
       .notNull(),
     resourceId: int("resourceId").notNull(),
     sourceType: mysqlEnum("sourceType", ["subscription", "purchase", "complimentary", "admin"])
@@ -272,6 +362,29 @@ export const conversations = mysqlTable(
     updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
   table => [uniqueIndex("conversations_fan_creator_unique").on(table.fanId, table.creatorId)],
+);
+
+export const creatorFollows = mysqlTable(
+  "creatorFollows",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    fanId: int("fanId").notNull(),
+    creatorId: int("creatorId").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  table => [uniqueIndex("creator_follows_fan_creator_unique").on(table.fanId, table.creatorId), index("creator_follows_creator_created").on(table.creatorId, table.createdAt)],
+);
+
+export const accountBlocks = mysqlTable(
+  "accountBlocks",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    blockerUserId: int("blockerUserId").notNull(),
+    blockedUserId: int("blockedUserId").notNull(),
+    reason: varchar("reason", { length: 300 }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  table => [uniqueIndex("account_blocks_pair_unique").on(table.blockerUserId, table.blockedUserId)],
 );
 
 export const messages = mysqlTable(
@@ -360,7 +473,10 @@ export const auditLogs = mysqlTable(
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+export type PlatformAccessPlan = typeof platformAccessPlans.$inferSelect;
+export type PlatformSubscription = typeof platformSubscriptions.$inferSelect;
 export type CreatorProfile = typeof creatorProfiles.$inferSelect;
+export type CreatorApplication = typeof creatorApplications.$inferSelect;
 export type MembershipTier = typeof membershipTiers.$inferSelect;
 export type Post = typeof posts.$inferSelect;
 export type Product = typeof products.$inferSelect;

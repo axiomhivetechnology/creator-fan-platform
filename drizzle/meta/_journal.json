@@ -15,6 +15,27 @@
       "when": 1787790006953,
       "tag": "0001_giant_mathemanic",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1787801783511,
+      "tag": "0002_amused_wind_dancer",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1787802055032,
+      "tag": "0003_yummy_living_mummy",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1787802457851,
+      "tag": "0004_minor_blob",
+      "breakpoints": true
     }
   ]
 }

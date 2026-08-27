@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { PlatformUser } from "./access";
 import {
   canAccessProtectedResource,
+  canAdministerPlatform,
+  canEnterPremiumNetwork,
   canManageCreatorAccount,
   canModeratePlatform,
   canPurchaseFromCreator,
@@ -16,6 +18,14 @@ const finance: PlatformUser = { id: 3, role: "finance", accountStatus: "active" 
 const suspendedFan: PlatformUser = { id: 9, role: "fan", accountStatus: "suspended" };
 
 describe("platform access policy", () => {
+  it("requires a current Premium Access subscription to enter the premium network", () => {
+    expect(canEnterPremiumNetwork(fan, "active")).toBe(true);
+    expect(canEnterPremiumNetwork(fan, "grace")).toBe(false);
+    expect(canEnterPremiumNetwork(fan, "expired")).toBe(false);
+    expect(canEnterPremiumNetwork(suspendedFan, "active")).toBe(false);
+    expect(canEnterPremiumNetwork(null, "active")).toBe(false);
+  });
+
   it("permits public posts but gates member and PPV content behind a valid entitlement", () => {
     expect(
       canAccessProtectedResource({ viewer: null, ownerUserId: creator.id, accessType: "public", hasActiveEntitlement: false }),
@@ -54,7 +64,9 @@ describe("platform access policy", () => {
     expect(canReviewRevenue(finance, creator.id)).toBe(true);
     expect(canReviewRevenue(fan, creator.id)).toBe(false);
     expect(canModeratePlatform(moderator)).toBe(true);
-    expect(canModeratePlatform(finance)).toBe(true);
+    expect(canModeratePlatform(finance)).toBe(false);
+    expect(canAdministerPlatform(admin)).toBe(true);
+    expect(canAdministerPlatform(moderator)).toBe(false);
     expect(canModeratePlatform(suspendedFan)).toBe(false);
   });
 
