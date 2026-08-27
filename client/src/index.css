@@ -82,8 +82,29 @@
 @layer base {
   * { @apply border-border outline-ring/50; }
   html { scroll-behavior: smooth; }
-  body { @apply bg-background text-foreground; font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+  body { @apply bg-background text-foreground; font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif; isolation: isolate; }
   button:not(:disabled), [role="button"]:not([aria-disabled="true"]), [type="button"]:not(:disabled), [type="submit"]:not(:disabled), [type="reset"]:not(:disabled), a[href], select:not(:disabled), input[type="checkbox"]:not(:disabled), input[type="radio"]:not(:disabled) { @apply cursor-pointer; }
+}
+
+body::before,
+body::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+body::before {
+  background:
+    radial-gradient(ellipse 68% 46% at 100% -8%, rgba(255, 69, 162, 0.085), transparent 66%),
+    radial-gradient(ellipse 50% 55% at -6% 38%, rgba(121, 55, 151, 0.075), transparent 70%);
+}
+
+body::after {
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
 }
 
 @layer components {
@@ -91,8 +112,14 @@
   .flex { min-height: 0; min-width: 0; }
   .font-blackletter { font-family: "UnifrakturCook", "Old English Text MT", serif; font-weight: 700; }
   .font-script { font-family: "Allura", cursive; font-weight: 400; }
-  .neon-line { background: linear-gradient(90deg, transparent, rgba(255, 71, 159, 0.82), transparent); height: 1px; }
-  .matte-panel { background: linear-gradient(145deg, rgba(255,255,255,.045), rgba(255,255,255,.016)); }
+  .neon-line { background: linear-gradient(90deg, transparent, rgba(255, 71, 159, 0.82), transparent); box-shadow: 0 0 10px rgba(255, 71, 159, .35), 0 0 32px rgba(255, 71, 159, .12); height: 1px; }
+  .matte-panel { background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.016)); box-shadow: inset 0 1px rgba(255,255,255,.075), 0 24px 70px rgba(0,0,0,.23); backdrop-filter: blur(12px); }
+  .font-script { text-shadow: 0 1px 18px rgba(255, 211, 235, .13); }
+  .premium-glass { background: linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.025) 42%, rgba(255, 91, 170, .06)); border: 1px solid rgba(255,255,255,.12); box-shadow: inset 0 1px rgba(255,255,255,.12), 0 18px 55px rgba(0,0,0,.32), 0 0 32px rgba(251,79,157,.045); backdrop-filter: blur(16px) saturate(1.1); }
+  .editorial-frame { position: relative; overflow: hidden; }
+  .editorial-frame::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 28%, rgba(255,255,255,.16) 46%, transparent 62%); opacity: .2; transform: translateX(-80%); }
+  img[alt="Alexis Adam’s creator portrait"] { box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 0 44px rgba(251,79,157,.11); }
+  img[alt$="creator profile backdrop"] { filter: contrast(1.04) saturate(.88) brightness(.86); }
   @media (min-width: 640px) { .container { padding-left: 1.5rem; padding-right: 1.5rem; } }
   @media (min-width: 1024px) { .container { max-width: 1280px; padding-left: 2rem; padding-right: 2rem; } }
 }
@@ -100,4 +127,14 @@
 @media (prefers-reduced-motion: no-preference) {
   a, button { transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1); }
   button:active { transform: scale(0.97); }
+  .editorial-frame::after { animation: editorial-sheen 9s cubic-bezier(.23,1,.32,1) infinite; }
+  .matte-panel { transition: transform 260ms cubic-bezier(.23,1,.32,1), box-shadow 260ms cubic-bezier(.23,1,.32,1); }
+  .matte-panel:hover { transform: translateY(-2px); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 28px 78px rgba(0,0,0,.32), 0 0 38px rgba(251,79,157,.055); }
+  img[alt="Alexis Adam’s creator portrait"] { transition: filter 700ms cubic-bezier(.23,1,.32,1), transform 900ms cubic-bezier(.23,1,.32,1); }
+  img[alt="Alexis Adam’s creator portrait"]:hover { filter: saturate(1.02) contrast(1.03); transform: scale(1.015); }
+}
+
+@keyframes editorial-sheen {
+  0%, 76%, 100% { transform: translateX(-105%); }
+  92% { transform: translateX(120%); }
 }
