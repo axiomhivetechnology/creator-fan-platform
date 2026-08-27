@@ -4,6 +4,8 @@ Creator Hub is a conventional, non-AI, OnlyFans-style creator platform built on 
 
 The current build intentionally contains **no AI features, AI-generated content, or AI-powered user workflows**. It provides a production-oriented platform foundation; activating real media delivery, payouts, live broadcasting, or payments requires the corresponding provider configuration and launch-policy review.
 
+The product specification set now includes a **Premium Access** design: visitors may learn about the platform or begin creator onboarding, but paid platform membership authorization is required before browsing real creator spaces, engaging, messaging, viewing creator offers, buying creator-level access, or entering the premium live-event experience. Start with [`docs/premium-entry-model.md`](docs/premium-entry-model.md), then read [`docs/feature-specification.md`](docs/feature-specification.md) and [`docs/technical-architecture-specification.md`](docs/technical-architecture-specification.md).
+
 ## Included Platform Surfaces
 
 | Surface | Path | Current behavior |

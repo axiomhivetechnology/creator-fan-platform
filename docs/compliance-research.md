@@ -19,3 +19,17 @@ The creator-earnings and payout domains must preserve accurate, exportable trans
 
 [1]: https://www.ftc.gov/business-guidance/advertising-marketing/endorsements-influencers-reviews "Federal Trade Commission — Endorsements, Influencers, and Reviews"
 [2]: https://www.irs.gov/businesses/gig-economy-tax-center "Internal Revenue Service — Gig Economy Tax Center"
+
+## Payment and Payout Research Addendum
+
+Stripe’s recurring-payment documentation identifies subscriptions as a method for customers to pay regularly and repeatedly. Its payment documentation separately describes a marketplace pattern that collects customer payments and pays a portion to sellers or service providers.[3] [4] These capabilities support two distinct billing layers in this product: the platform’s recurring Premium Access subscription and a creator-specific subscription, PPV purchase, tip, or live-event ticket. The design must keep the resulting platform fee, creator balance, transfer, payout, and refund logic explicit and auditable.
+
+| Product decision | Specification consequence |
+|---|---|
+| Platform Premium Access is recurring | Model it as its own provider product/price and subscription lifecycle; it is not a creator subscription. |
+| Creator is paid for sales | Select a marketplace payout model and configure creator onboarding, payout schedule, fee calculation, and reconciliation before funds move. |
+| Several paid access types exist | Use different provider metadata and internal fulfillment records for premium access, creator membership, PPV, tips, and live tickets. |
+| Payment state changes asynchronously | Provider events, not return-page status, remain the source that triggers access grants, revocations, and financial ledger actions. |
+
+[3]: https://docs.stripe.com/recurring-payments "Stripe — Recurring payments"
+[4]: https://docs.stripe.com/payments "Stripe — Payments and marketplace integration"

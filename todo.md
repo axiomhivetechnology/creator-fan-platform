@@ -15,3 +15,5 @@
 - [x] Document external-service configuration, compliance review boundaries, deployment prerequisites, and the completed release scope.
 - [x] Add OnlyFans-style creator profile, subscription, locked-feed, PPV offer, tipping, and fan-engagement requirements to the implementation scope.
 - [x] Add age acknowledgement, creator review status, reporting, moderation escalation, and safety-notice interfaces.
+- [x] Create comprehensive feature, architecture, data, API, security, payments, and operations specifications for the creator platform.
+- [x] Specify the premium-entry paywall, where paid membership authorization gates protected browsing, creator engagement, messaging, purchases, and live-session entry.
