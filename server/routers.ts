@@ -41,7 +41,7 @@ export const appRouter = router({
   }),
 
   creatorApplication: router({
-    me: protectedProcedure.query(async ({ ctx }) => db.getCreatorApplicationForUser(ctx.user.id)),
+    me: protectedProcedure.query(async ({ ctx }) => (await db.getCreatorApplicationForUser(ctx.user.id)) ?? null),
     submit: protectedProcedure.input(z.object({
       displayName: z.string().trim().min(2).max(120),
       proposedHandle: z.string().trim().regex(/^[a-z0-9-]{3,64}$/),
@@ -294,6 +294,10 @@ export const appRouter = router({
     create: protectedProcedure.input(z.object({ productId: z.number().int().positive() })).mutation(async ({ ctx, input }) => {
       if (!hasActiveAccount(ctx.user)) {
         throw new TRPCError({ code: "FORBIDDEN", message: "Your account is not eligible to purchase access." });
+      }
+      const premiumStatus = await db.getPremiumAccessStatus(ctx.user.id);
+      if (!canEnterPremiumNetwork(ctx.user, premiumStatus)) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "An active Premium Access membership is required before purchasing creator offers." });
       }
       const product = await db.getActiveProduct(input.productId);
       if (!product) throw new TRPCError({ code: "NOT_FOUND", message: "This offer is no longer available." });
