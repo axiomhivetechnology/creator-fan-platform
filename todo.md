@@ -29,3 +29,4 @@
 - [x] Research current authoritative feature, security, privacy, payment, advertising, age-assurance, recordkeeping, and safety guidance for the platform’s documentation set.
 - [x] Produce and validate a complete, source-backed functional specification set covering all website features, architecture, data, APIs, controls, testing, operations, and launch requirements.
 - [x] Replace the XIOMHIVE header credit with AXIOM-HIVE TECHNOLOGY.
+- [x] Use the supplied creator image and display Alexis Adam’s in the website’s creator presentation.

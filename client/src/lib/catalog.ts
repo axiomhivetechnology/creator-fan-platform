@@ -5,6 +5,7 @@ export type CreatorPreview = {
   category: string;
   tagline: string;
   accent: string;
+  imageUrl?: string;
   membershipPrice: string;
   status: "Live now" | "Next session" | "New drop";
   nextEvent: string;
@@ -12,12 +13,13 @@ export type CreatorPreview = {
 
 export const creators: CreatorPreview[] = [
   {
-    handle: "afterhours",
-    displayName: "After Hours",
-    initials: "AH",
-    category: "Music & culture",
-    tagline: "Unfiltered sets, studio notes, and the stories between tracks.",
-    accent: "from-fuchsia-500 via-rose-400 to-orange-300",
+    handle: "alexis-adams",
+    displayName: "Alexis Adam’s",
+    initials: "AA",
+    category: "Featured creator",
+    tagline: "A private creator space for updates, premium posts, and event access.",
+    accent: "from-fuchsia-500 via-rose-400 to-indigo-500",
+    imageUrl: "/manus-storage/alexis-adams-creator_af11bd52.jpeg",
     membershipPrice: "$9 / month",
     status: "Live now",
     nextEvent: "Open studio session",
