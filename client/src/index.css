@@ -118,7 +118,7 @@ body::after {
   .premium-glass { background: linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.025) 42%, rgba(255, 91, 170, .06)); border: 1px solid rgba(255,255,255,.12); box-shadow: inset 0 1px rgba(255,255,255,.12), 0 18px 55px rgba(0,0,0,.32), 0 0 32px rgba(251,79,157,.045); backdrop-filter: blur(16px) saturate(1.1); }
   .editorial-frame { position: relative; overflow: hidden; }
   .editorial-frame::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 28%, rgba(255,255,255,.16) 46%, transparent 62%); opacity: .2; transform: translateX(-80%); }
-  img[alt="Alexis Adam’s creator portrait"] { box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 0 44px rgba(251,79,157,.11); }
+  img[alt="Kaden McCullen creator portrait"] { box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 0 44px rgba(251,79,157,.11); }
   img[alt$="creator profile backdrop"] { filter: contrast(1.04) saturate(.88) brightness(.86); }
   @media (min-width: 640px) { .container { padding-left: 1.5rem; padding-right: 1.5rem; } }
   @media (min-width: 1024px) { .container { max-width: 1280px; padding-left: 2rem; padding-right: 2rem; } }
@@ -130,8 +130,8 @@ body::after {
   .editorial-frame::after { animation: editorial-sheen 9s cubic-bezier(.23,1,.32,1) infinite; }
   .matte-panel { transition: transform 260ms cubic-bezier(.23,1,.32,1), box-shadow 260ms cubic-bezier(.23,1,.32,1); }
   .matte-panel:hover { transform: translateY(-2px); box-shadow: inset 0 1px rgba(255,255,255,.1), 0 28px 78px rgba(0,0,0,.32), 0 0 38px rgba(251,79,157,.055); }
-  img[alt="Alexis Adam’s creator portrait"] { transition: filter 700ms cubic-bezier(.23,1,.32,1), transform 900ms cubic-bezier(.23,1,.32,1); }
-  img[alt="Alexis Adam’s creator portrait"]:hover { filter: saturate(1.02) contrast(1.03); transform: scale(1.015); }
+  img[alt="Kaden McCullen creator portrait"] { transition: filter 700ms cubic-bezier(.23,1,.32,1), transform 900ms cubic-bezier(.23,1,.32,1); }
+  img[alt="Kaden McCullen creator portrait"]:hover { filter: saturate(1.02) contrast(1.03); transform: scale(1.015); }
 }
 
 @keyframes editorial-sheen {

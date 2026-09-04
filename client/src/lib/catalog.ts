@@ -13,13 +13,13 @@ export type CreatorPreview = {
 
 export const creators: CreatorPreview[] = [
   {
-    handle: "alexis-adams",
-    displayName: "Alexis Adam’s",
-    initials: "AA",
+    handle: "kaden-mccullen",
+    displayName: "Kaden McCullen",
+    initials: "KM",
     category: "Featured creator",
     tagline: "A private creator space for updates, premium posts, and event access.",
     accent: "from-fuchsia-500 via-rose-400 to-indigo-500",
-    imageUrl: "/manus-storage/alexis-adams-creator_af11bd52.jpeg",
+    imageUrl: "/manus-storage/kaden-mccullen_560fb805.jpeg",
     membershipPrice: "$9 / month",
     status: "Live now",
     nextEvent: "Open studio session",
