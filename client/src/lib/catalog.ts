@@ -17,7 +17,7 @@ export const creators: CreatorPreview[] = [
     displayName: "Kaden McCullen",
     initials: "KM",
     category: "Featured creator",
-    tagline: "A private creator space for updates, premium posts, and event access.",
+    tagline: "A private creator space for live rooms, premium posts, gifting, and member access.",
     accent: "from-fuchsia-500 via-rose-400 to-indigo-500",
     imageUrl: "/manus-storage/kaden-mccullen_560fb805.jpeg",
     membershipPrice: "$9 / month",

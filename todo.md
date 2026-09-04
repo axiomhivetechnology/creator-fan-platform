@@ -33,3 +33,7 @@
 - [x] Apply and verify refined high-class editorial effects, including controlled texture, light, glass depth, and motion, across the premium visual system.
 - [x] Audit all implemented website features, authorization boundaries, routes, tests, and runtime health; correct the Premium Access checkout gap and creator-application empty-response issue; document provider-dependent checkout activation and live-stream playback as outstanding launch gates.
 - [x] Replace the featured creator artwork and presentation name with Kaden McCullen using the supplied image, then verify desktop and mobile rendering.
+- [x] Review the newly supplied pasted content and implement the confirmed scope: retain Kaden McCullen as the canonical name, expand homepage and Premium Access messaging for live rooms, gifts/tokens, privacy gating, beta profile incentives, and provider-dependent launch disclosures, then verify desktop and mobile rendering.
+- [x] Reconcile the attached brief’s “Caden McCullen” wording with the earlier confirmed user instruction to use Kaden McCullen; retain Kaden McCullen as the canonical display identity.
+- [x] Expand the site messaging to cover token/gifting concepts, stronger Premium Access and privacy-detail gating, creator/free-profile beta incentives, and clearly labeled provider-dependent launch status.
+- [x] Re-verify the expanded attached-brief update on desktop and mobile and revise the completion record to match the actual implementation scope.
