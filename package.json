@@ -1,6 +1,7 @@
 {
   "name": "creator-fan-platform",
   "version": "1.0.0",
+  "author": "Kaden McCullen",
   "type": "module",
   "license": "MIT",
   "scripts": {

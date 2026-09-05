@@ -1,0 +1,10 @@
+{
+  "entry": "main.typ",
+  "metadata": {
+    "author": "Kaden McCullen",
+    "subtitle": "Architecture, implementation, rebuild guide, operations, and launch readiness",
+    "title": "Creator Hub — Full Engineering Packet"
+  },
+  "mode": "report",
+  "theme": "report-theme.typ"
+}

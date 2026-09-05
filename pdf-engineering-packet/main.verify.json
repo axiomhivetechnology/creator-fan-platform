@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "pdf": "/home/ubuntu/creator-fan-platform/pdf-engineering-packet/main.pdf",
+  "profile": "text-document",
+  "overall": "PASS",
+  "checks": [
+    {
+      "name": "signature",
+      "status": "PASS",
+      "message": "PDF header is valid",
+      "evidence": {
+        "header": "%PDF-"
+      }
+    },
+    {
+      "name": "pdfinfo",
+      "status": "PASS",
+      "message": "PDF is parseable by pdfinfo",
+      "evidence": {}
+    },
+    {
+      "name": "page-count",
+      "status": "PASS",
+      "message": "pages=18",
+      "evidence": {
+        "pages": 18
+      }
+    },
+    {
+      "name": "text-presence",
+      "status": "PASS",
+      "message": "characters=43458",
+      "evidence": {}
+    },
+    {
+      "name": "placeholders",
+      "status": "PASS",
+      "message": "No placeholder markers found",
+      "evidence": {
+        "matches": []
+      }
+    },
+    {
+      "name": "fonts",
+      "status": "PASS",
+      "message": "font_records=4",
+      "evidence": {}
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "task_kind": "new-document",
+  "output": "pdf",
+  "signals": ["professional engineering report", "implementation guide"],
+  "hard_constraints": ["single PDF packet", "professional and rebuild-oriented", "clear legal and operational boundaries"],
+  "content_features": {
+    "code_blocks": 6,
+    "defined_terms": 18,
+    "portrait_images": 0
+  }
+}

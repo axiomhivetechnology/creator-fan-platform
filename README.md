@@ -1,5 +1,7 @@
 # Creator Hub
 
+See [`ATTRIBUTION.md`](ATTRIBUTION.md) for the creator, support, licensing, and public-profile disclosure. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for development and attribution standards.
+
 > **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
 
 Creator Hub is a conventional, OnlyFans-style creator platform built on React, Express, tRPC, Drizzle, and a relational database. It is designed around public creator discovery, paid creator memberships, locked posts, pay-per-view offers, tips, live-event access, creator tooling, direct engagement, and accountable platform operations.
