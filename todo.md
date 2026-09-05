@@ -1,5 +1,7 @@
 # Project TODO
 
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
 - [x] Establish the non-AI platform domain model, architecture boundaries, and role/access policy.
 - [x] Define and migrate the database schema for creator profiles, products, memberships, purchases, entitlements, content assets, live events, advertising placements, and audit records.
 - [x] Build the public discovery homepage, creator profile pages, catalog views, and access-aware navigation.
@@ -29,13 +31,15 @@
 - [x] Research current authoritative feature, security, privacy, payment, advertising, age-assurance, recordkeeping, and safety guidance for the platform’s documentation set.
 - [x] Produce and validate a complete, source-backed functional specification set covering all website features, architecture, data, APIs, controls, testing, operations, and launch requirements.
 - [x] Replace the XIOMHIVE header credit with AXIOM-HIVE TECHNOLOGY.
-- [x] Use the supplied creator image and display Alexis Adam’s in the website’s creator presentation.
+- [x] Use the supplied creator image and display Kaden McCullen in the website’s creator presentation.
 - [x] Apply and verify refined high-class editorial effects, including controlled texture, light, glass depth, and motion, across the premium visual system.
 - [x] Audit all implemented website features, authorization boundaries, routes, tests, and runtime health; correct the Premium Access checkout gap and creator-application empty-response issue; document provider-dependent checkout activation and live-stream playback as outstanding launch gates.
 - [x] Replace the featured creator artwork and presentation name with Kaden McCullen using the supplied image, then verify desktop and mobile rendering.
 - [x] Review the newly supplied pasted content and implement the confirmed scope: retain Kaden McCullen as the canonical name, expand homepage and Premium Access messaging for live rooms, gifts/tokens, privacy gating, beta profile incentives, and provider-dependent launch disclosures, then verify desktop and mobile rendering.
-- [x] Reconcile the attached brief’s “Caden McCullen” wording with the earlier confirmed user instruction to use Kaden McCullen; retain Kaden McCullen as the canonical display identity.
+- [x] Retain Kaden McCullen as the canonical creator identity across the site and documentation.
 - [x] Expand the site messaging to cover token/gifting concepts, stronger Premium Access and privacy-detail gating, creator/free-profile beta incentives, and clearly labeled provider-dependent launch status.
 - [x] Re-verify the expanded attached-brief update on desktop and mobile and revise the completion record to match the actual implementation scope.
 - [x] Produce and validate a comprehensive engineering packet covering the complete implemented architecture, feature inventory, data model, APIs, authorization, workflows, testing, deployment, operations, and remaining launch gates, incorporating the latest supplied brief where relevant.
 - [x] Add the confirmed Instagram handle @itskadenbro to Kaden McCullen’s creator metadata and appropriate public profile/presentation surfaces, then verify rendering and documentation alignment.
+- [x] Normalize all documentation to use Kaden McCullen consistently and document that Kaden independently came up with the project while artificial intelligence provided research and code support; validate that no conflicting references remain.
+- [x] Normalize every documentation file to identify Kaden McCullen as the creator and state that Kaden independently came up with the project while artificial intelligence provided research and code support.

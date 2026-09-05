@@ -1,9 +1,10 @@
 # Creator Hub — Technical Architecture Specification
 
-**Author:** Manus AI  
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
 **Status:** Implementation specification  
 **Architecture style:** Modular full-stack application with provider-managed payments, payouts, storage/CDN, and live video.  
-**Product constraint:** The platform contains no AI user feature, AI generation, AI recommendation, or automated AI moderation.
 
 ## 1. Architecture Principles
 

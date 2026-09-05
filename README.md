@@ -1,8 +1,10 @@
 # Creator Hub
 
-Creator Hub is a conventional, non-AI, OnlyFans-style creator platform built on React, Express, tRPC, Drizzle, and a relational database. It is designed around public creator discovery, paid creator memberships, locked posts, pay-per-view offers, tips, live-event access, creator tooling, direct engagement, and accountable platform operations.
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
 
-The current build intentionally contains **no AI features, AI-generated content, or AI-powered user workflows**. It provides a production-oriented platform foundation; activating real media delivery, payouts, live broadcasting, or payments requires the corresponding provider configuration and launch-policy review.
+Creator Hub is a conventional, OnlyFans-style creator platform built on React, Express, tRPC, Drizzle, and a relational database. It is designed around public creator discovery, paid creator memberships, locked posts, pay-per-view offers, tips, live-event access, creator tooling, direct engagement, and accountable platform operations.
+
+The current build provides human-directed creator and member workflows and a production-oriented platform foundation; activating real media delivery, payouts, live broadcasting, or payments requires the corresponding provider configuration and launch-policy review.
 
 The product specification set now includes a **Premium Access** design: visitors may learn about the platform or begin creator onboarding, but paid platform membership authorization is required before browsing real creator spaces, engaging, messaging, viewing creator offers, buying creator-level access, or entering the premium live-event experience. Start with [`docs/premium-entry-model.md`](docs/premium-entry-model.md), then read [`docs/feature-specification.md`](docs/feature-specification.md) and [`docs/technical-architecture-specification.md`](docs/technical-architecture-specification.md).
 

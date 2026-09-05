@@ -1,6 +1,9 @@
 # Creator Hub — Architecture Baseline
 
-**Author:** Manus AI  
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
+**Project creator:** Kaden McCullen  
 **Status:** Initial implementation baseline  
 **Scope:** Conventional creator–fan commerce and community platform. The release contains no AI features, AI-generated content, or AI-powered user workflows.
 
@@ -89,7 +92,7 @@ Operational controls include server-side audit logs for security-relevant events
 
 | Capability | Baseline | Implementation condition |
 |---|---|---|
-| Authentication | Existing managed application authentication, extended with verification and privileged-session policies | No AI functionality; no sensitive provider secrets in the client. |
+| Authentication | Existing managed application authentication, extended with verification and privileged-session policies | No sensitive provider secrets in the client. |
 | Checkout and subscriptions | Provider-hosted checkout with a server-side checkout adapter and signed webhooks | The payment provider is configured after the business confirms settlement country, currency, tax, and creator-payout needs. |
 | Creator payouts | Marketplace/connected-account capability or an external payout operation | Requires legal, tax, KYC, and payout-provider review before live funds are moved. |
 | File delivery | Object storage and CDN with server-issued, short-lived access | Production use requires a protected storage policy and media-provider configuration. |
@@ -98,7 +101,7 @@ Operational controls include server-side audit logs for security-relevant events
 
 ## Non-Goals for the First Build
 
-The initial build will not process raw payment data, issue tax advice, execute automated creator payouts without external provider configuration, claim complete protection against screen recording, operate its own streaming infrastructure, or provide any AI-derived recommendation, moderation, generation, or automation feature.
+The initial build will not process raw payment data, issue tax advice, execute automated creator payouts without external provider configuration, claim complete protection against screen recording, or operate its own streaming infrastructure.
 
 ## References
 

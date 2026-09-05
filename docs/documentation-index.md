@@ -1,6 +1,9 @@
 # Creator Hub — Documentation Index
 
-This index identifies the canonical specifications and supporting research for **Creator Hub**, a non-AI adult-only creator membership platform. The implementation follows a premium-entry model: an account must hold verified **Premium Access** before it can join the real creator network, engage/contact creators, use creator offers, or seek protected content/live-event access.
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
+This index identifies the canonical specifications and supporting research for **Creator Hub**, an adult-only creator membership platform. The implementation follows a premium-entry model: an account must hold verified **Premium Access** before it can join the real creator network, engage/contact creators, use creator offers, or seek protected content/live-event access.
 
 > This documentation set is an engineering and operating specification. It does not itself create legal, tax, payment-provider, age-assurance, or regulatory compliance. Launch requires qualified review and written approvals for the actual business model and jurisdiction.
 

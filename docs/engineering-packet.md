@@ -1,7 +1,10 @@
 # Creator Hub — Full Engineering Packet
 
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
 **Document status:** Implementation-aligned engineering packet  
-**Prepared by:** Manus AI  
+**Project creator:** Kaden McCullen  
 **Product:** Creator Hub  
 **Current release checkpoint:** the published checkpoint attached with this packet  
 **Published domain:** `https://creatortap-ahmwcikp.manus.space`  
@@ -15,7 +18,7 @@ Creator Hub is a non-AI creator monetization platform for human creators and pay
 
 The implemented system is a full-stack React, Express, tRPC, Drizzle, and MySQL/TiDB application. Authentication is provided through the configured Manus OAuth flow. The browser uses typed tRPC procedures; the server performs entitlement, account-state, ownership, relationship, and staff-scope checks. Content metadata is stored in the relational database while creator media is uploaded to managed object storage through server-created upload targets. Payment and streaming boundaries are represented as provider-dependent foundations rather than a claim that the adult-industry production provider configuration is complete.
 
-The current public visual system is a matte-black editorial interface with restrained neon-pink accents, Old English display typography, readable body typography, cursive photographic treatments, glass-depth cards, grain, vignette, and reduced-motion-aware transitions. The featured creator is **Kaden McCullen**, with the confirmed social handle **@itskadenbro**. The latest supplied brief used the spelling “Caden McCullen”; the earlier direct instruction to use “Kaden McCullen” is treated as canonical and is reflected in the site and this packet.
+The current public visual system is a matte-black editorial interface with restrained neon-pink accents, Old English display typography, readable body typography, cursive photographic treatments, glass-depth cards, grain, vignette, and reduced-motion-aware transitions. The featured creator is **Kaden McCullen**, with the confirmed social handle **@itskadenbro**. Kaden McCullen is the canonical creator reference used in the site and this packet.
 
 | Area | Current state | Engineering interpretation |
 |---|---|---|

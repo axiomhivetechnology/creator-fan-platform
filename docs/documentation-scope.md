@@ -1,6 +1,9 @@
 # Creator Hub — Documentation Scope and Decision Record
 
-**Author:** Manus AI  
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
+**Project creator:** Kaden McCullen  
 **Status:** Research and specification baseline  
 **Primary working jurisdiction:** United States federal baseline, with state, local, international, and launch-market requirements identified as mandatory review items.
 

@@ -1,6 +1,9 @@
 # Implementation Status and Launch Gates
 
-**Author:** Manus AI  
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
+**Project creator:** Kaden McCullen  
 **Status:** Technical implementation update; not a legal or tax opinion  
 **Scope:** Creator Hub’s current adult-entertainment creator-platform foundation.
 

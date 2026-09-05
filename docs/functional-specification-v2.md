@@ -1,6 +1,9 @@
 # Creator Hub — Functional Specification
 
-**Author:** Manus AI  
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
+**Project creator:** Kaden McCullen  
 **Version:** 2.0 — canonical functional specification  
 **Product class:** Adult-only creator membership and media platform  
 **Primary working jurisdiction:** United States federal baseline; all state, local, and international launch rules require qualified review.  

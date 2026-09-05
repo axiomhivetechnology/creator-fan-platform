@@ -1,5 +1,8 @@
 # Research Findings 02 — Identity Assurance and Child-Safety Escalation
 
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
 **Research date:** 2026-08-27  
 **Status:** Design input; not legal advice.
 

@@ -1,5 +1,8 @@
 # Compliance Research Notes — OnlyFans-Style Platform
 
+
+> **Creator and support disclosure:** The creator of this project is **Kaden McCullen**. Kaden independently came up with the project, its direction, and its requirements. To support Kaden, artificial intelligence provided Kaden research and code to support their project; it did not independently originate the project or make the product decisions.
+
 ## Source Findings
 
 The platform’s sponsored-content workflow should require a creator or brand to identify paid, gifted, affiliate, or otherwise materially connected posts before publication. The Federal Trade Commission describes its Endorsement Guides as addressing material connections between advertisers and endorsers in social-media and influencer marketing, and its influencer guidance states that creators working with brands must make a good disclosure of their relationship to the brand.[1]
