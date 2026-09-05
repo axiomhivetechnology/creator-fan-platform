@@ -12,9 +12,6 @@ for path in sorted(ROOT.rglob('*.md')):
     text = path.read_text()
     text = text.replace('**Author:** Manus AI  \n', '**Project creator:** Kaden McCullen  \n')
     text = text.replace('**Prepared by:** Manus AI  \n', '**Project creator:** Kaden McCullen  \n')
-    text = text.replace('Caden McCullen', 'Kaden McCullen')
-    text = text.replace('Alexis Adam’s', 'Kaden McCullen')
-    text = text.replace('The latest supplied brief used the spelling “Kaden McCullen”; the earlier direct instruction to use “Kaden McCullen” is treated as canonical and is reflected in the site and this packet.', 'Kaden McCullen is the canonical creator reference used in the site and this packet.')
     if '**Creator and support disclosure:**' not in text:
         lines = text.splitlines(keepends=True)
         insert_at = 1 if lines and lines[0].startswith('# ') else 0
