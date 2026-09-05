@@ -37,3 +37,5 @@
 - [x] Reconcile the attached brief’s “Caden McCullen” wording with the earlier confirmed user instruction to use Kaden McCullen; retain Kaden McCullen as the canonical display identity.
 - [x] Expand the site messaging to cover token/gifting concepts, stronger Premium Access and privacy-detail gating, creator/free-profile beta incentives, and clearly labeled provider-dependent launch status.
 - [x] Re-verify the expanded attached-brief update on desktop and mobile and revise the completion record to match the actual implementation scope.
+- [x] Produce and validate a comprehensive engineering packet covering the complete implemented architecture, feature inventory, data model, APIs, authorization, workflows, testing, deployment, operations, and remaining launch gates, incorporating the latest supplied brief where relevant.
+- [x] Add the confirmed Instagram handle @itskadenbro to Kaden McCullen’s creator metadata and appropriate public profile/presentation surfaces, then verify rendering and documentation alignment.

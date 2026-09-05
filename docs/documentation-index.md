@@ -6,6 +6,7 @@ This index identifies the canonical specifications and supporting research for *
 
 | Document | Purpose | Primary audience | Status |
 |---|---|---|---|
+| [Full Engineering Packet](engineering-packet.md) | Implementation-aligned architecture, routes, API procedures, data model, authorization, workflows, testing, deployment, social metadata, and launch gates. | Engineering, product, design, operations, security, finance | Current release packet. |
 | [Functional Specification v2](functional-specification-v2.md) | Product purpose, roles, Premium Access gate, creator onboarding, content, commerce, engagement, live events, reports, ads, accessibility, and acceptance journeys. | Product, design, engineering, operations | Canonical. |
 | [Technical Specification v2](technical-specification-v2.md) | System architecture, policy enforcement, data model, provider adapters, APIs/events, media/video, security/privacy, and nonfunctional targets. | Engineering, security, vendor integration | Canonical. |
 | [Operations & Launch Specification v2](operations-launch-specification-v2.md) | Governance, policy library, staffing/queues, finance, privacy, safety, advertising, testing, release blockers, and launch checklist. | Operations, finance, legal, security, executive sponsor | Canonical. |

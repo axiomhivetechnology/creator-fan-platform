@@ -6,6 +6,7 @@ export type CreatorPreview = {
   tagline: string;
   accent: string;
   imageUrl?: string;
+  instagramHandle?: string;
   membershipPrice: string;
   status: "Live now" | "Next session" | "New drop";
   nextEvent: string;
@@ -20,6 +21,7 @@ export const creators: CreatorPreview[] = [
     tagline: "A private creator space for live rooms, premium posts, gifting, and member access.",
     accent: "from-fuchsia-500 via-rose-400 to-indigo-500",
     imageUrl: "/manus-storage/kaden-mccullen_560fb805.jpeg",
+    instagramHandle: "@itskadenbro",
     membershipPrice: "$9 / month",
     status: "Live now",
     nextEvent: "Open studio session",
