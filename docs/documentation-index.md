@@ -10,6 +10,7 @@ This index identifies the canonical specifications and supporting research for *
 | Document | Purpose | Primary audience | Status |
 |---|---|---|---|
 | [Full Engineering Packet](engineering-packet.md) | Implementation-aligned architecture, routes, API procedures, data model, authorization, workflows, testing, deployment, social metadata, and launch gates. | Engineering, product, design, operations, security, finance | Current release packet. |
+| [Developer Editor Specification](developer-editor-specification.md) | Admin-only IDE-style public-site customization workspace, settings model, audit behavior, safe boundaries, rebuild sequence, and launch notes. | Engineering, product, operations, security | Current feature specification. |
 | [Functional Specification v2](functional-specification-v2.md) | Product purpose, roles, Premium Access gate, creator onboarding, content, commerce, engagement, live events, reports, ads, accessibility, and acceptance journeys. | Product, design, engineering, operations | Canonical. |
 | [Technical Specification v2](technical-specification-v2.md) | System architecture, policy enforcement, data model, provider adapters, APIs/events, media/video, security/privacy, and nonfunctional targets. | Engineering, security, vendor integration | Canonical. |
 | [Operations & Launch Specification v2](operations-launch-specification-v2.md) | Governance, policy library, staffing/queues, finance, privacy, safety, advertising, testing, release blockers, and launch checklist. | Operations, finance, legal, security, executive sponsor | Canonical. |
@@ -25,7 +26,7 @@ This index identifies the canonical specifications and supporting research for *
 
 ## Recommended Reading Order
 
-Product/design should start with the Functional Specification v2, then read the Operations & Launch Specification v2 for the requirements that constrain flows. Engineering should pair the Technical Specification v2 with the Functional Specification v2 before implementing a module. Finance, legal, privacy, and trust-and-safety owners should use the Operations & Launch Specification v2 and research findings to establish the final launch register and approval process.
+Product/design should start with the Functional Specification v2, then read the Operations & Launch Specification v2 for the requirements that constrain flows. Engineering should pair the Technical Specification v2 with the Functional Specification v2 before implementing a module, and should read the Developer Editor Specification before changing public presentation controls. Finance, legal, privacy, and trust-and-safety owners should use the Operations & Launch Specification v2 and research findings to establish the final launch register and approval process.
 
 ## Core Design Decision
 

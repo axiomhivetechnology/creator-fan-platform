@@ -46,3 +46,5 @@
 - [x] Create and validate one professional PDF engineering packet covering the complete Creator Hub rebuild guide, architecture, implementation, operations, legal boundaries, testing, deployment, and remaining launch gates.
 - [x] Audit repository metadata, package/build author fields, license and contribution files, and documentation/footer surfaces; apply consistent Kaden McCullen attribution and support disclosure where appropriate.
 - [x] Remove the remaining deprecated creator reference from source, documentation, generated packet content, and metadata; verify Kaden McCullen is the sole featured creator identity.
+- [x] Add a role-restricted developer editor IDE workspace for safe site customization with editable settings, preview, validation, persistence, auditability, documentation, and responsive UI verification.
+- [x] Add customizable notifications with persisted admin controls, audience/severity targeting, visible delivery UI, tests, documentation, and strict non-admin denial for the Developer Editor route.

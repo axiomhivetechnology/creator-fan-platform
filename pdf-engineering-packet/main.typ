@@ -165,6 +165,7 @@ The application is a modular monolith until traffic, availability, or restricted
   [/inbox], [Inbox], [PremiumAccessGate], [Protected conversation workspace.],
   [/safety], [Safety center], [Public], [Reporting, restrictions, human review, and safety information.],
   [/operations], [Operations desk], [Staff checks in procedures], [Summary, application, media, report, and ad review queues.],
+  [/developer], [Developer editor], [Admin-only workspace], [IDE-style public presentation editor with draft preview, safe fields, protected boundaries, and audited persistence.],
 )
 
 Public previews communicate the concept but do not authorize real private network data. The route wrapper improves user experience; the server remains the actual authorization boundary.
@@ -230,7 +231,21 @@ The concrete implementation uses `canEnterPremiumNetwork`, `canAccessProtectedRe
   [access], [post, liveEvent], [Entitlement decision without media bytes or playback credentials.],
   [checkout], [create], [Premium-gated hosted checkout foundation, pending order, and audit write.],
   [safety], [report], [Public report creation for profiles, posts, assets, messages, events, and ads.],
+  [siteSettings], [Developer editor], [Public copy and visibility settings with admin-only audited writes.],
+  [notifications], [current, adminList, create, setActive], [Audience-filtered delivery plus admin-only creation, activation, deactivation, validation, and audit events.],
 )
+
+== Developer editor IDE
+
+The `/developer` workspace is an administrator-only control plane for safe public presentation changes. It uses an IDE-inspired file tree, structured fields, a live draft preview, reset behavior, and a save action. The shared Zod schema bounds and trims the editable fields before the server accepts them.
+
+The persisted `siteSettings` singleton contains brand name, header attribution, membership label, hero eyebrow, hero title, hero accent, hero description, and two visibility flags. Public pages read the settings through `siteSettings.current` and fall back to safe defaults when the database record is absent. The update procedure uses `adminProcedure`, writes `developer.site_settings_updated` to `auditLogs`, and cannot alter creator identity, Premium Access authorization, payment or payout credentials, streaming credentials, moderation evidence, or server policy.
+
+This feature is a customization control plane, not an arbitrary code-execution environment. A future true source editor would require sandboxed compilation, diff review, signed releases, rollback, branch isolation, and independent security review.
+
+== Custom notifications
+
+An administrator can publish a bounded site announcement with title, message, severity, audience, active state, and optional scheduling window. The `notifications.current` procedure filters active windows and audience eligibility before the global banner renders. Members can dismiss the banner locally. Create and status changes are admin-only and append `developer.notification_created` or `developer.notification_status_changed` audit events.
 
 == Creator application
 
@@ -274,7 +289,9 @@ Approved and payout-ready creators can schedule future events with `members`, `t
   [adPlacements], [Advertising], [Sponsor, disclosure, approval, active window, placement state.],
   [reports], [Safety], [Subject, reporter, reason, detail, workflow status.],
   [moderationActions], [Safety], [Staff action, target, rationale, timestamps.],
-  [auditLogs], [Governance], [Actor, action, target, metadata, timestamps.],
+  [siteSettings], [Developer editor], [Singleton public copy and visibility settings with admin updater.],
+  [siteNotifications], [Notifications], [Title, body, severity, audience, active window, creator, lifecycle, timestamps.],
+  [auditLogs], [Governance], [Actor, action, target, metadata, timestamps for high-impact operations including developer settings and notifications.],
 )
 
 The schema stores provider references and workflow states, not passwords, raw payment-card data, or ordinary-query copies of restricted evidence. A future evidence vault must be separate, encrypted, access-granted by case, and independently audited.

@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PremiumAccessGate } from "@/components/PremiumAccessGate";
+import GlobalNotificationBanner from "@/components/GlobalNotificationBanner";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -11,6 +12,7 @@ import CreatorContactSettings from "./pages/CreatorContactSettings";
 import CreatorEvents from "./pages/CreatorEvents";
 import CreatorProfile from "./pages/CreatorProfile";
 import CreatorStudio from "./pages/CreatorStudio";
+import DeveloperEditor from "./pages/DeveloperEditor";
 import Explore from "./pages/Explore";
 import Home from "./pages/Home";
 import Inbox from "./pages/Inbox";
@@ -36,6 +38,7 @@ function Router() {
       <Route path={"/inbox"}>{() => <PremiumAccessGate><Inbox /></PremiumAccessGate>}</Route>
       <Route path={"/safety"} component={SafetyCenter} />
       <Route path={"/operations"} component={OperationsDesk} />
+      <Route path={"/developer"} component={DeveloperEditor} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -57,6 +60,7 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
+          <GlobalNotificationBanner />
           <Router />
         </TooltipProvider>
       </ThemeProvider>

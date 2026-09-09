@@ -36,6 +36,45 @@ export const users = mysqlTable("users", {
 });
 
 /**
+ * Public presentation settings are intentionally limited to copy and visibility
+ * controls. Creator identity, payouts, payment-provider credentials, and
+ * compliance evidence remain outside the easy editor.
+ */
+export const siteSettings = mysqlTable("siteSettings", {
+  id: int("id").primaryKey(),
+  brandName: varchar("brandName", { length: 120 }).notNull(),
+  attributionLine: varchar("attributionLine", { length: 180 }).notNull(),
+  heroEyebrow: varchar("heroEyebrow", { length: 120 }).notNull(),
+  heroTitle: varchar("heroTitle", { length: 160 }).notNull(),
+  heroAccent: varchar("heroAccent", { length: 80 }).notNull(),
+  heroCopy: text("heroCopy").notNull(),
+  membershipLabel: varchar("membershipLabel", { length: 120 }).notNull(),
+  showEarlyCircle: boolean("showEarlyCircle").default(true).notNull(),
+  showSafetyPanel: boolean("showSafetyPanel").default(true).notNull(),
+  updatedBy: int("updatedBy"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export const siteNotifications = mysqlTable(
+  "siteNotifications",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    title: varchar("title", { length: 120 }).notNull(),
+    body: text("body").notNull(),
+    severity: mysqlEnum("severity", ["info", "success", "warning", "urgent"]).default("info").notNull(),
+    audience: mysqlEnum("audience", ["everyone", "fans", "creators", "staff", "admins"]).default("everyone").notNull(),
+    isActive: boolean("isActive").default(true).notNull(),
+    startsAt: timestamp("startsAt"),
+    endsAt: timestamp("endsAt"),
+    createdBy: int("createdBy").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [index("site_notifications_active_window").on(table.isActive, table.startsAt, table.endsAt, table.createdAt)],
+);
+
+/**
  * Premium Access is the platform-level prerequisite for entering the private
  * creator network. It is deliberately separate from creator memberships,
  * PPV purchases, and live-event tickets.
@@ -473,6 +512,10 @@ export const auditLogs = mysqlTable(
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+export type SiteSettings = typeof siteSettings.$inferSelect;
+export type InsertSiteSettings = typeof siteSettings.$inferInsert;
+export type SiteNotification = typeof siteNotifications.$inferSelect;
+export type InsertSiteNotification = typeof siteNotifications.$inferInsert;
 export type PlatformAccessPlan = typeof platformAccessPlans.$inferSelect;
 export type PlatformSubscription = typeof platformSubscriptions.$inferSelect;
 export type CreatorProfile = typeof creatorProfiles.$inferSelect;

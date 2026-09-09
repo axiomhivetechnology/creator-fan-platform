@@ -184,6 +184,7 @@ The route table below is derived from `client/src/App.tsx`. A route being regist
 | `/inbox` | `Inbox` | `PremiumAccessGate` | Premium-gated messaging workspace. |
 | `/safety` | `SafetyCenter` | Public | Reporting, safety, restrictions, and human-review explanation. |
 | `/operations` | `OperationsDesk` | Staff checks in data layer | Operations summary and moderation/review queues. |
+| `/developer` | `DeveloperEditor` | Admin-only workspace | IDE-style public presentation editor with draft preview, safe fields, protected boundaries, and audited persistence. |
 | `/404` | `NotFound` | Public | Explicit not-found presentation. |
 
 ## 6. Authentication, Sessions, and Account State
@@ -195,6 +196,10 @@ The `users` table stores the provider `openId`, display name, email reference, l
 The current implementation includes a public `auth.me` query and public logout mutation. High-risk production operations still require the configured identity providerâ€™s assurance, re-authentication or MFA policy, and operational review. The architecture explicitly separates ordinary account/profile data from restricted age, identity, consent, and compliance records.
 
 ## 7. Authorization and Access-Control Design
+
+### 7.0 Developer editor boundary
+
+The Developer Editor is a separate administrator-only control plane for public presentation settings. Navigation is shown only to active users with the `admin` role, and the write procedure uses `adminProcedure` on the server. The persisted `siteSettings` singleton contains only bounded public copy and two visibility flags. Creator identity, Premium Access enforcement, payment and payout credentials, streaming credentials, moderation evidence, and server authorization logic are deliberately not editable through this workspace. Every successful write creates an `auditLogs` record with action `developer.site_settings_updated`, target `site_settings`, actor ID, and changed-field metadata. Public pages use safe defaults when the settings record is unavailable.
 
 ### 7.1 Policy composition
 
@@ -247,6 +252,7 @@ All procedures are grouped under the exported `appRouter` in `server/routers.ts`
 | `access` | `post`, `liveEvent` | Returns an entitlement-aware access decision without returning protected media or playback URLs. |
 | `checkout` | `create` | Requires active account and Premium Access, creates hosted Stripe Checkout foundation, creates pending order, and writes audit event. Production provider eligibility remains unresolved. |
 | `safety` | `report` | Public report submission for profile, post, asset, message, live event, or ad; attaches reporter when authenticated. |
+| `notifications` | `current`, `adminList`, `create`, `setActive` | Audience-filtered active delivery plus admin-only creation, activation, deactivation, Zod validation, and audit events. |
 
 ## 9. Relational Data Model
 
@@ -275,6 +281,8 @@ The implemented schema in `drizzle/schema.ts` contains the following tables.
 | `adPlacements` | Sponsorship/advertising placement state | Sponsor, disclosure, approval, current window, placement status. |
 | `reports` | Public and authenticated safety reports | Subject type/id, reporter, reason, detail, status. |
 | `moderationActions` | Staff moderation history | Report/target, actor, action, rationale and timestamps. |
+| `siteSettings` | Public presentation configuration | Singleton brand, attribution, hero copy, membership label, visibility flags, and admin updater. |
+| `siteNotifications` | Custom announcement delivery | Title, body, severity, audience, active window, creator, lifecycle, and timestamps. |
 | `auditLogs` | Append-oriented accountability record | Actor, action, target, metadata, timestamps. |
 
 The schema intentionally stores provider references and workflow states rather than passwords, raw payment-card data, or ordinary-query copies of restricted compliance evidence. The future evidence vault must remain a separate controlled boundary with case-scoped access and independent audit.
@@ -322,6 +330,10 @@ Opening a conversation requires Premium Access, a creator profile, the creatorâ€
 ### 10.6 Live-event foundation
 
 Creators can schedule future events with `members`, `ticketed`, or `private` access types after approval and payout readiness checks. The `access.liveEvent` procedure verifies Premium Access, event existence and state, current resource entitlement, and creator/resource ownership rules. Actual low-latency playback, chat transport, token issuance, moderation tooling, and stream-provider lifecycle remain integration work.
+
+### 10.7 Custom notifications
+
+An administrator can publish a short site announcement from the Developer Editor with a title, message, severity, audience, active state, and optional scheduling window. The public `notifications.current` procedure filters active windows and audience eligibility before the global banner renders. Notifications can be locally dismissed in the browser. Creation and activation changes are admin-only and append `developer.notification_created` or `developer.notification_status_changed` audit records.
 
 ## 11. Media and Storage Architecture
 

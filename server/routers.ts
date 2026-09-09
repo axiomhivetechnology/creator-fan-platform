@@ -13,7 +13,9 @@ import { makePremiumAccessDecision } from "./platform/premium";
 import { getStripeClient } from "./payments/stripe";
 import { getStripePriceData } from "./payments/stripeProducts";
 import { storageCreateUploadTarget } from "./storage";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { siteSettingsInputSchema } from "@shared/siteSettings";
+import { canViewNotification, notificationInputSchema } from "@shared/notifications";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -37,6 +39,40 @@ export const appRouter = router({
         ...makePremiumAccessDecision(status),
         subscription: await db.getCurrentPlatformSubscription(ctx.user.id),
       };
+    }),
+  }),
+
+  siteSettings: router({
+    current: publicProcedure.query(() => db.getSiteSettings()),
+    update: adminProcedure.input(siteSettingsInputSchema).mutation(async ({ ctx, input }) => {
+      const settings = await db.upsertSiteSettings(input, ctx.user.id);
+      await db.logAuditEvent({
+        actorId: ctx.user.id,
+        action: "developer.site_settings_updated",
+        targetType: "site_settings",
+        targetId: "1",
+        metadata: { changedFields: Object.keys(input), editor: "developer" },
+      });
+      return settings;
+    }),
+  }),
+
+  notifications: router({
+    current: publicProcedure.query(async ({ ctx }) => {
+      const notifications = await db.getActiveSiteNotifications();
+      return notifications.filter(notification => canViewNotification(notification.audience, ctx.user?.role));
+    }),
+    adminList: adminProcedure.query(() => db.listSiteNotifications()),
+    create: adminProcedure.input(notificationInputSchema).mutation(async ({ ctx, input }) => {
+      const notification = await db.createSiteNotification(input, ctx.user.id);
+      await db.logAuditEvent({ actorId: ctx.user.id, action: "developer.notification_created", targetType: "site_notification", targetId: String(notification.id), metadata: { severity: input.severity, audience: input.audience } });
+      return notification;
+    }),
+    setActive: adminProcedure.input(z.object({ id: z.number().int().positive(), isActive: z.boolean() })).mutation(async ({ ctx, input }) => {
+      const notification = await db.setSiteNotificationActive(input.id, input.isActive);
+      if (!notification) throw new TRPCError({ code: "NOT_FOUND", message: "Notification not found." });
+      await db.logAuditEvent({ actorId: ctx.user.id, action: "developer.notification_status_changed", targetType: "site_notification", targetId: String(input.id), metadata: { isActive: input.isActive } });
+      return notification;
     }),
   }),
 

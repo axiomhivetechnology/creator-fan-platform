@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, isNull, lte, or } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import {
   accountBlocks,
@@ -15,6 +15,8 @@ import {
   posts,
   products,
   reports,
+  siteNotifications,
+  siteSettings,
   liveEvents,
   messages,
   platformAccessPlans,
@@ -24,6 +26,8 @@ import {
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
 import type { PremiumAccessStatus } from "./platform/access";
+import { defaultSiteSettings, toPublicSiteSettings, type SiteSettingsInput } from "@shared/siteSettings";
+import type { NotificationInput } from "@shared/notifications";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -555,6 +559,64 @@ export async function fulfillPaidOrder(input: { checkoutId: string; paymentId: s
     });
   }
   return { orderId: order.id, fulfillment: "completed" } as const;
+}
+
+export async function getSiteSettings() {
+  const db = await getDb();
+  if (!db) return defaultSiteSettings;
+  const rows = await db.select().from(siteSettings).where(eq(siteSettings.id, 1)).limit(1);
+  return toPublicSiteSettings(rows[0]);
+}
+
+export async function upsertSiteSettings(input: SiteSettingsInput, updatedBy: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  await db.insert(siteSettings).values({ id: 1, ...input, updatedBy }).onDuplicateKeyUpdate({
+    set: { ...input, updatedBy },
+  });
+  return getSiteSettings();
+}
+
+export async function getActiveSiteNotifications() {
+  const db = await getDb();
+  if (!db) return [];
+  const now = new Date();
+  return db.select().from(siteNotifications).where(and(
+    eq(siteNotifications.isActive, true),
+    or(isNull(siteNotifications.startsAt), lte(siteNotifications.startsAt, now)),
+    or(isNull(siteNotifications.endsAt), gte(siteNotifications.endsAt, now)),
+  )).orderBy(desc(siteNotifications.createdAt)).limit(12);
+}
+
+export async function listSiteNotifications() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(siteNotifications).orderBy(desc(siteNotifications.createdAt)).limit(50);
+}
+
+export async function createSiteNotification(input: NotificationInput, createdBy: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const result = await db.insert(siteNotifications).values({
+    title: input.title,
+    body: input.body,
+    severity: input.severity,
+    audience: input.audience,
+    isActive: input.isActive,
+    startsAt: input.startsAt ?? null,
+    endsAt: input.endsAt ?? null,
+    createdBy,
+  });
+  const rows = await db.select().from(siteNotifications).where(eq(siteNotifications.id, result[0].insertId)).limit(1);
+  return rows[0];
+}
+
+export async function setSiteNotificationActive(id: number, isActive: boolean) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  await db.update(siteNotifications).set({ isActive }).where(eq(siteNotifications.id, id));
+  const rows = await db.select().from(siteNotifications).where(eq(siteNotifications.id, id)).limit(1);
+  return rows[0] ?? null;
 }
 
 export async function logAuditEvent(input: { actorId: number | null; action: string; targetType: string; targetId?: string | null; metadata?: Record<string, unknown> }) {

@@ -36,6 +36,20 @@
       "when": 1787802457851,
       "tag": "0004_minor_blob",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1788677562466,
+      "tag": "0005_freezing_pestilence",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1788923125259,
+      "tag": "0006_round_doctor_doom",
+      "breakpoints": true
     }
   ]
 }
