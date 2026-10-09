@@ -10,6 +10,14 @@ The current build provides human-directed creator and member workflows and a pro
 
 The product specification set now includes a **Premium Access** design: visitors may learn about the platform or begin creator onboarding, but paid platform membership authorization is required before browsing real creator spaces, engaging, messaging, viewing creator offers, buying creator-level access, or entering the premium live-event experience. Start with [`docs/premium-entry-model.md`](docs/premium-entry-model.md), then read [`docs/feature-specification.md`](docs/feature-specification.md) and [`docs/technical-architecture-specification.md`](docs/technical-architecture-specification.md).
 
+## Monetization and access-gate implementation
+
+The server exposes an explicit monetization catalog and calculates transaction economics centrally. The platform commission is configured as **$0.00**; the modeled ecosystem net is gross transaction value less the baseline merchant-processing estimate. Orders retain their revenue vertical and settlement fields for later provider reconciliation, so refunds, reserves, taxes, payouts, disputes, and actual provider fees are not incorrectly represented as profit. The supported verticals are Premium Access, creator subscriptions, paid content, live gifting, and private engineering workspaces.
+
+The existing server-side Premium Access gate remains the prerequisite for creator-network activity and creator checkout. The quote procedure is informational and does not grant entitlement; checkout and resource access continue to require server authorization and verified provider events. Live token gifting and private B2B workspace membership remain provider and product workflows to complete before launch rather than being simulated by client-only controls.
+
+The new token foundation separates token accounts from immutable ledger entries and requires an active Premium Access account, an approved creator, enabled creator tipping, and a positive integer token amount before a gift can be considered eligible. The private engineering foundation stores isolated workspaces, membership roles, membership status, MFA verification timestamps, and an MFA-required default; workspace creation and listing are server-gated. The configured identity provider and production token/payment provider must still supply actual MFA assertions, balance settlement, refunds, and provider reconciliation before launch.
+
 ## Included Platform Surfaces
 
 | Surface | Path | Current behavior |

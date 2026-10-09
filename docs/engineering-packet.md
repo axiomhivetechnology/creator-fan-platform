@@ -31,7 +31,7 @@ The current public visual system is a matte-black editorial interface with restr
 | Staff operations | Implemented foundation | Operations dashboard and scoped queues exist for applications, reports, media, and advertising. |
 | Payments | Provider-dependent | Hosted checkout and Stripe foundation exist in code, but adult-industry eligibility and production fund flows are not approved or activated. |
 | Restricted evidence vault | Not complete | The architecture specifies a separate evidence boundary; the production vault still needs to be integrated. |
-| Automated verification | Passing | Type checking passes and 17 automated tests pass across 7 test files. |
+| Automated verification | Passing | Type checking passes and 29 automated tests pass across 12 test files. |
 
 ## 2. Product Intent and Confirmed Decisions
 
@@ -137,6 +137,8 @@ server/
     creatorApplication.ts    Creator application eligibility and workflow helpers
     media.ts                 Media type, size, and filename policy
     messaging.ts             Conversation and participant policy helpers
+    monetization.ts          Revenue-vertical and settlement economics policy
+    collaboration.ts        Token-gift and private-workspace policy helpers
   payments/
     stripe.ts                Provider client foundation
     stripeProducts.ts        Product-to-provider price mapping
@@ -426,21 +428,24 @@ The following implementation areas are complete or have a working foundation in 
 - Server-enforced premium access, protected resource checks, ownership checks, contact policy, blocks, role separation, media validation, creator readiness checks, and audit events.
 - Managed storage upload-target foundation and protected asset metadata workflow.
 - Hosted checkout foundation and provider-reference order creation.
+- Centralized zero-platform-commission settlement model with explicit revenue verticals, baseline merchant-processing estimates, and ecosystem-net fields on orders.
+- Token account and append-only token-ledger schema foundation with server-side gift eligibility checks gated by Premium Access, creator approval, creator tip settings, and integer token amounts.
+- Private engineering workspace schema and server routes with explicit membership roles/status, MFA-required defaults, Premium Access gating, and audited workspace creation.
 - Kaden McCullen featured imagery, display metadata, and Instagram handle `@itskadenbro` across the homepage, cards, and creator profile.
 - Matte-black, neon-pink, Old English/cursive editorial design system with high-class depth, grain, vignette, and reduced-motion behavior.
 - Source-backed functional, technical, operations, compliance-boundary, and launch documentation set.
-- Automated validation with 18 passing tests and successful type checking, including the featured creator metadata assertion.
+- Automated validation with 29 passing tests and successful type checking, including monetization, token-gift, private-workspace, and featured creator metadata assertions.
 
 ## 18. Outstanding Launch Gates and Recommended Order
 
 The application is an implementation baseline rather than a fully approved adult-industry production operation. The recommended order is:
 
 1. Confirm the legal entity, launch jurisdictions, product categories, minimum-age policy, consent/rights policy, privacy notice, terms, tax obligations, and recordkeeping responsibilities with qualified counsel.
-2. Obtain written approval from an adult-industry payment/acquiring and payout provider for the exact fund flow, creator category, recurring billing, PPV, tips, gifting, reserves, refunds, and chargebacks.
+2. Obtain written approval from an adult-industry payment/acquiring and payout provider for the exact fund flow, creator category, recurring billing, PPV, tips, gifting, token funding/debit/reversal, reserves, refunds, and chargebacks.
 3. Implement provider webhook signature verification, idempotency, reconciliation, dispute handling, payout ledger, reserve logic, and operational finance controls.
 4. Integrate managed streaming with entitlement-gated short-lived playback tokens, creator broadcast lifecycle, moderation controls, chat, reports, and incident handling.
 5. Build the restricted evidence vault with encrypted storage, narrow roles, case-scoped grants, retention/legal holds, access logging, and no generic administrator bypass.
-6. Replace illustrative public creator records with approved database-backed profiles and ensure no private creator details leak before Premium Access.
+6. Replace illustrative public creator records with approved database-backed profiles and ensure no private creator details or private engineering workspace data leak before Premium Access and, where required, MFA.
 7. Complete end-to-end, security, performance, resilience, accessibility, abuse, and operational acceptance testing.
 8. Establish launch runbooks for payment incidents, content reports, account restrictions, creator appeals, privacy requests, data recovery, vendor outages, and live-event safety.
 

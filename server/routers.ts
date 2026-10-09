@@ -10,6 +10,8 @@ import { canSubmitCreatorApplication } from "./platform/creatorApplication";
 import { isAcceptedMediaSize, isAcceptedMediaType, safeMediaFilename } from "./platform/media";
 import { canOpenConversation, isConversationParticipant } from "./platform/messaging";
 import { makePremiumAccessDecision } from "./platform/premium";
+import { calculateTransactionEconomics, monetizationCatalog } from "./platform/monetization";
+import { canCreatePrivateWorkspace, canSendTokenGift } from "./platform/collaboration";
 import { getStripeClient } from "./payments/stripe";
 import { getStripePriceData } from "./payments/stripeProducts";
 import { storageCreateUploadTarget } from "./storage";
@@ -39,6 +41,66 @@ export const appRouter = router({
         ...makePremiumAccessDecision(status),
         subscription: await db.getCurrentPlatformSubscription(ctx.user.id),
       };
+    }),
+  }),
+
+  monetization: router({
+    catalog: publicProcedure.query(() => ({
+      platformFeePolicy: "0.00",
+      settlementNote: "Gross transaction value remains in the ecosystem less baseline merchant processing; provider fees, refunds, reserves, taxes, payouts, and disputes are reconciled separately.",
+      verticals: monetizationCatalog,
+    })),
+    quote: protectedProcedure.input(z.object({
+      grossAmount: z.number().positive().max(999999.99),
+      currency: z.string().regex(/^[A-Za-z]{3}$/).optional(),
+      vertical: z.enum(["platform_membership", "creator_subscription", "paid_content", "live_gifting", "b2b_workspace"]),
+    })).query(async ({ ctx, input }) => {
+      if (!hasActiveAccount(ctx.user)) throw new TRPCError({ code: "FORBIDDEN", message: "An active account is required for a transaction quote." });
+      const premiumStatus = await db.getPremiumAccessStatus(ctx.user.id);
+      if (input.vertical !== "platform_membership" && !canEnterPremiumNetwork(ctx.user, premiumStatus)) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "An active Premium Access membership is required for this monetization vertical." });
+      }
+      return {
+        premiumRequired: false,
+        ...calculateTransactionEconomics(input),
+      };
+    }),
+  }),
+
+  tokens: router({
+    giftEligibility: protectedProcedure.input(z.object({ creatorId: z.number().int().positive(), amount: z.number().int().positive().max(1000000) })).query(async ({ ctx, input }) => {
+      const premiumStatus = await db.getPremiumAccessStatus(ctx.user.id);
+      const creator = await db.getCreatorProfileById(input.creatorId);
+      const allowed = Boolean(creator && canSendTokenGift({
+        user: ctx.user,
+        premiumStatus,
+        creatorApproved: creator.approvalStatus === "approved",
+        creatorAllowsTips: creator.allowTips,
+        amount: input.amount,
+      }));
+      return { allowed, reason: allowed ? "eligible" : "premium_creator_or_tip_policy_required" } as const;
+    }),
+  }),
+
+  workspaces: router({
+    mine: protectedProcedure.query(async ({ ctx }) => {
+      const premiumStatus = await db.getPremiumAccessStatus(ctx.user.id);
+      if (!canCreatePrivateWorkspace(ctx.user, premiumStatus) && ctx.user.role !== "fan") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Premium Access and an approved workspace role are required." });
+      }
+      if (!canEnterPremiumNetwork(ctx.user, premiumStatus)) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Premium Access is required to view private workspaces." });
+      }
+      return db.listEngineeringWorkspacesForUser(ctx.user.id);
+    }),
+    create: protectedProcedure.input(z.object({ slug: z.string().trim().regex(/^[a-z0-9-]{3,96}$/), name: z.string().trim().min(2).max(160), description: z.string().trim().max(2000).optional() })).mutation(async ({ ctx, input }) => {
+      const premiumStatus = await db.getPremiumAccessStatus(ctx.user.id);
+      if (!canCreatePrivateWorkspace(ctx.user, premiumStatus)) {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Premium Access and an approved creator or administrator role are required to create a private workspace." });
+      }
+      const workspace = await db.createEngineeringWorkspace({ ...input, ownerId: ctx.user.id });
+      await db.logAuditEvent({ actorId: ctx.user.id, action: "workspace.created", targetType: "engineering_workspace", targetId: String(workspace.id), metadata: { slug: workspace.slug, requiresMfa: true } });
+      return workspace;
     }),
   }),
 

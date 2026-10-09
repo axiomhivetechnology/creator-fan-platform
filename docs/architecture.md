@@ -82,6 +82,14 @@ Payment success displayed in the browser is not sufficient to grant access. The 
 | Advertising and disclosure | Placement inventory, sponsor disclosure, consent signals, review status | `adPlacements`, sponsorship campaigns, approvals |
 | Governance | Reports, moderation actions, role changes, sensitive operations, policy versions | `reports`, `moderationActions`, `auditLogs` |
 
+### Monetization and private collaboration addendum
+
+The implementation includes explicit revenue-vertical metadata on products and orders. Platform commission is stored as `0.00`; the settlement model separately records the baseline merchant-processing estimate and ecosystem net so gross volume is not presented as guaranteed profit. Provider refunds, reserves, taxes, payouts, disputes, and adjustments remain reconciliation events.
+
+High-velocity gifting is represented by `tokenAccounts` and append-only `tokenLedgerEntries`. A token gift is not eligible unless the server confirms an active account, active Premium Access, an approved creator, creator-enabled tipping, and a positive integer amount. Actual wallet funding, debit settlement, reversal, and provider reconciliation remain launch-gated.
+
+Private engineering collaboration is represented by `engineeringWorkspaces` and `engineeringWorkspaceMembers`. Workspaces default to MFA-required, members have explicit roles and lifecycle states, and workspace creation/listing is Premium Access and role-gated. The configured identity provider must provide the production MFA assertion before sensitive workspace data is exposed.
+
 ## Security and Operations Baseline
 
 The implementation treats authentication, authorization, media delivery, payment events, and privileged actions as critical paths. Authentication relies on secure session management, verified email where applicable, rate limits, generic failure messages, credential recovery safeguards, and re-authentication after high-risk changes. OWASP notes that authenticated users are not automatically authorized for every resource and calls out horizontal access violations as a common concern.[1] Privileged roles must use multifactor authentication before production enablement.

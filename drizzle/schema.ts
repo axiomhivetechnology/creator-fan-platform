@@ -261,6 +261,9 @@ export const products = mysqlTable(
     membershipTierId: int("membershipTierId"),
     productType: mysqlEnum("productType", ["subscription", "post", "bundle", "live_event"])
       .notNull(),
+    revenueVertical: mysqlEnum("revenueVertical", ["platform_membership", "creator_subscription", "paid_content", "live_gifting", "b2b_workspace"])
+      .default("paid_content")
+      .notNull(),
     title: varchar("title", { length: 180 }).notNull(),
     description: text("description"),
     price: decimal("price", { precision: 12, scale: 2 }).notNull(),
@@ -284,6 +287,11 @@ export const orders = mysqlTable(
       .notNull(),
     subtotal: decimal("subtotal", { precision: 12, scale: 2 }).notNull(),
     platformFee: decimal("platformFee", { precision: 12, scale: 2 }).default("0.00").notNull(),
+    revenueVertical: mysqlEnum("revenueVertical", ["platform_membership", "creator_subscription", "paid_content", "live_gifting", "b2b_workspace"])
+      .default("paid_content")
+      .notNull(),
+    merchantProcessingFee: decimal("merchantProcessingFee", { precision: 12, scale: 2 }),
+    ecosystemNet: decimal("ecosystemNet", { precision: 12, scale: 2 }),
     total: decimal("total", { precision: 12, scale: 2 }).notNull(),
     currency: varchar("currency", { length: 3 }).default("USD").notNull(),
     provider: varchar("provider", { length: 48 }),
@@ -297,6 +305,71 @@ export const orders = mysqlTable(
     index("orders_creator_created").on(table.creatorId, table.createdAt),
     uniqueIndex("orders_provider_checkout_unique").on(table.providerCheckoutId),
   ],
+);
+
+export const tokenAccounts = mysqlTable(
+  "tokenAccounts",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    userId: int("userId").notNull(),
+    balance: int("balance").default(0).notNull(),
+    status: mysqlEnum("status", ["active", "frozen", "closed"]).default("active").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [uniqueIndex("token_accounts_user_unique").on(table.userId)],
+);
+
+export const tokenLedgerEntries = mysqlTable(
+  "tokenLedgerEntries",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    accountId: int("accountId").notNull(),
+    userId: int("userId").notNull(),
+    creatorId: int("creatorId"),
+    liveEventId: int("liveEventId"),
+    direction: mysqlEnum("direction", ["credit", "debit", "reversal"]).notNull(),
+    amount: int("amount").notNull(),
+    referenceType: varchar("referenceType", { length: 64 }).notNull(),
+    referenceId: varchar("referenceId", { length: 128 }).notNull(),
+    idempotencyKey: varchar("idempotencyKey", { length: 128 }).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  table => [
+    uniqueIndex("token_ledger_idempotency_unique").on(table.idempotencyKey),
+    index("token_ledger_account_created").on(table.accountId, table.createdAt),
+  ],
+);
+
+export const engineeringWorkspaces = mysqlTable(
+  "engineeringWorkspaces",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    ownerId: int("ownerId").notNull(),
+    slug: varchar("slug", { length: 96 }).notNull(),
+    name: varchar("name", { length: 160 }).notNull(),
+    description: text("description"),
+    status: mysqlEnum("status", ["draft", "active", "archived"]).default("draft").notNull(),
+    requiresMfa: boolean("requiresMfa").default(true).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [uniqueIndex("engineering_workspaces_slug_unique").on(table.slug), index("engineering_workspaces_owner_status").on(table.ownerId, table.status)],
+);
+
+export const engineeringWorkspaceMembers = mysqlTable(
+  "engineeringWorkspaceMembers",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    workspaceId: int("workspaceId").notNull(),
+    userId: int("userId").notNull(),
+    role: mysqlEnum("role", ["owner", "engineer", "creator", "viewer"]).notNull(),
+    status: mysqlEnum("status", ["invited", "active", "suspended", "removed"]).default("invited").notNull(),
+    mfaVerifiedAt: timestamp("mfaVerifiedAt"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  },
+  table => [uniqueIndex("engineering_workspace_members_unique").on(table.workspaceId, table.userId), index("engineering_workspace_members_user_status").on(table.userId, table.status)],
 );
 
 export const subscriptions = mysqlTable(
@@ -524,6 +597,10 @@ export type MembershipTier = typeof membershipTiers.$inferSelect;
 export type Post = typeof posts.$inferSelect;
 export type Product = typeof products.$inferSelect;
 export type Order = typeof orders.$inferSelect;
+export type TokenAccount = typeof tokenAccounts.$inferSelect;
+export type TokenLedgerEntry = typeof tokenLedgerEntries.$inferSelect;
+export type EngineeringWorkspace = typeof engineeringWorkspaces.$inferSelect;
+export type EngineeringWorkspaceMember = typeof engineeringWorkspaceMembers.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;
 export type Entitlement = typeof entitlements.$inferSelect;
 export type LiveEvent = typeof liveEvents.$inferSelect;

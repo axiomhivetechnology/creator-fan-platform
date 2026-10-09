@@ -154,6 +154,8 @@ The relational database is the source of truth for identities, platform policies
 | Trust and safety | `reports`, `moderationActions`, `policyVersions`, `appeals` | Reporter/subject/reason, case state, action/rationale, policy version, review trail. |
 | Advertising | `adPlacements`, `campaigns`, `adImpressions` | Sponsor, creator/placement scope, disclosure, targeting consent rule, review state, delivery and measurement record. |
 | Audit | `auditLogs`, `accessEvents` | Actor/service, action, target, policy decision/outcome, correlation ID, timestamp, redacted metadata. |
+| Token economy | `tokenAccounts`, `tokenLedgerEntries` | User wallet status and append-only credit/debit/reversal records with idempotency and provider references. |
+| Private collaboration | `engineeringWorkspaces`, `engineeringWorkspaceMembers` | Isolated workspace ownership, role membership, lifecycle status, MFA verification timestamp, and access boundary. |
 
 ### 5.2 Required relationship and integrity rules
 
@@ -167,6 +169,8 @@ The relational database is the source of truth for identities, platform policies
 | Entitlement is not duplicated | Uniqueness appropriate to user/resource/source; handler must upsert or safely no-op for replayed provider events. |
 | Asset records do not grant access | `storageKey` is opaque metadata; authorization runs before a signed delivery request. |
 | Ads are not delivered before approval | Query predicate requires `approved`, current campaign window, and consent compatibility. |
+| Token gifts cannot bypass policy | `tokens.giftEligibility` requires active account, Premium Access, approved creator, enabled tipping, and a positive integer amount. Ledger settlement must be provider-backed and idempotent. |
+| Private workspaces are isolated | `workspaces.create` requires Premium Access plus creator/admin authority; workspace listing requires Premium Access and active membership. MFA is required by default and must be asserted by the identity provider. |
 
 ### 5.3 Premium Access schema extension
 
@@ -202,6 +206,9 @@ The application uses typed RPC procedures. Every protected procedure calls the c
 | `messages.send` | Participant + Premium Access + conversation active | Validate/store message and audit safety event. | Deny/limit/restrict. |
 | `library.list` | Premium Access + active account | Return own current/past authorized resources. | Billing recovery state for lapsed Premium Access. |
 | `live.list` | Premium Access | Return eligible/marketable scheduled events. | Premium upgrade state. |
+| `tokens.giftEligibility` | Premium Access + approved creator + tip policy | Validate token-gift prerequisites without trusting client state or issuing balance changes. | Eligibility decision and denial reason. |
+| `workspaces.mine` | Premium Access + active membership | Return only the caller’s active private-workspace memberships. | Redacted workspace membership view. |
+| `workspaces.create` | Premium Access + creator/admin role | Create an MFA-required workspace and owner membership; audit the action. | Workspace ID/status. |
 
 ### 6.3 Content, live, and media procedures
 

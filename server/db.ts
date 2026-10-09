@@ -22,6 +22,9 @@ import {
   platformAccessPlans,
   platformSubscriptions,
   subscriptions,
+  tokenAccounts,
+  engineeringWorkspaces,
+  engineeringWorkspaceMembers,
   users,
 } from "../drizzle/schema";
 import { ENV } from './_core/env';
@@ -435,6 +438,42 @@ export async function getCurrentPlatformSubscription(userId: number) {
   return subscription;
 }
 
+export async function createEngineeringWorkspace(input: { ownerId: number; slug: string; name: string; description?: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("Database is unavailable.");
+  const result = await db.insert(engineeringWorkspaces).values({
+    ownerId: input.ownerId,
+    slug: input.slug,
+    name: input.name,
+    description: input.description ?? null,
+    status: "active",
+    requiresMfa: true,
+  });
+  const workspaceId = result[0].insertId;
+  await db.insert(engineeringWorkspaceMembers).values({ workspaceId, userId: input.ownerId, role: "owner", status: "active" });
+  return { id: workspaceId, slug: input.slug, status: "active" as const };
+}
+
+export async function listEngineeringWorkspacesForUser(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      id: engineeringWorkspaces.id,
+      slug: engineeringWorkspaces.slug,
+      name: engineeringWorkspaces.name,
+      description: engineeringWorkspaces.description,
+      status: engineeringWorkspaces.status,
+      requiresMfa: engineeringWorkspaces.requiresMfa,
+      role: engineeringWorkspaceMembers.role,
+      membershipStatus: engineeringWorkspaceMembers.status,
+      mfaVerifiedAt: engineeringWorkspaceMembers.mfaVerifiedAt,
+    })
+    .from(engineeringWorkspaceMembers)
+    .innerJoin(engineeringWorkspaces, eq(engineeringWorkspaces.id, engineeringWorkspaceMembers.workspaceId))
+    .where(and(eq(engineeringWorkspaceMembers.userId, userId), eq(engineeringWorkspaceMembers.status, "active")));
+}
+
 export async function getLiveEventAccessSubject(liveEventId: number) {
   const db = await getDb();
   if (!db) return undefined;
@@ -486,7 +525,6 @@ export async function createPendingOrder(input: { buyerId: number; productId: nu
   if (!db) throw new Error("Database is unavailable.");
   const product = await getActiveProduct(input.productId);
   if (!product) throw new Error("Product is unavailable.");
-
   const result = await db.insert(orders).values({
     buyerId: input.buyerId,
     creatorId: product.creatorId,
@@ -494,6 +532,7 @@ export async function createPendingOrder(input: { buyerId: number; productId: nu
     status: "pending",
     subtotal: product.price,
     platformFee: "0.00",
+    revenueVertical: product.revenueVertical,
     total: product.price,
     currency: product.currency,
     provider: input.provider,
